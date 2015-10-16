@@ -1,0 +1,7 @@
+pytest
+pytest-cov
+pytest-pep8
+pytest-pythonpath
+rethinkdb
+sphinx
+tox
