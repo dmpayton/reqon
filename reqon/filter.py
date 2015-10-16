@@ -2,6 +2,7 @@ import rethinkdb as r
 
 from .geo import geojson_to_reql
 
+# move build[_*] to utils.py?
 
 def build(node):
     op, value = node
