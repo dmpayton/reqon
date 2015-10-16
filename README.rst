@@ -1,14 +1,15 @@
-====================
-ReQL Object Notation
-====================
+==========================
+ReQL Query Object Notation
+==========================
 
-ReQLON (/'rɛklən/) lets you build basic `ReQL <http://rethinkdb.com/docs/introduction-to-reql/>`_
+ReQON (/ˈriːkɒn/) lets you build basic `ReQL <http://rethinkdb.com/docs/introduction-to-reql/>`_
 queries from JSON.
 
 I love RethinkDB, and ReQL is awesome and powerful, but sometimes you need to
-expose RethinkDB's querying capabilities through an HTTP API endpoint.
+expose RethinkDB's querying capabilities through an HTTP API endpoint. ReQON
+lets you do that.
 
-ReQLON transforms this:
+ReQON transforms this:
 
 .. code-block:: python
 
@@ -41,12 +42,12 @@ into this:
     ).sample(5)
 
 
-Do you want to expose RethinkDB through an HTTP API? ReQLON is for you.
+ReQON makes it easy to query RethinkDB through a web API:
 
 .. code-block:: python
 
     import json
-    import reqlon
+    import reqon
     import rethinkdb as r
 
 
@@ -54,7 +55,7 @@ Do you want to expose RethinkDB through an HTTP API? ReQLON is for you.
         def post(self, request):
             conn = r.connect()
             query = json.loads(request.body)
-            reql = reqlon.query(query)
+            reql = reqon.query(query)
             results = reql.run(conn)
             conn.close()
             return json.dumps({'data': results})

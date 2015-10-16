@@ -1,4 +1,4 @@
-import reqlon
+import reqon
 import rethinkdb as r
 import unittest
 
@@ -8,7 +8,7 @@ class TermsTests(unittest.TestCase):
         self.reql = r.table('movies')
 
     def test_group(self):
-        reql1 = reqlon.terms.group(self.reql, 'rating')
+        reql1 = reqon.terms.group(self.reql, 'rating')
         reql2 = self.reql.group('rating')
         print()
         print(reql1)

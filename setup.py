@@ -9,14 +9,14 @@ except ImportError:
     from distutils.core import setup, find_packages
 
 setup(
-    name='reqlon',
+    name='reqon',
     version='0.1.0',
     author='Derek Payton',
     author_email='derek.payton@gmail.com',
     description='A basic JSON to ReQL query builder.',
     keywords='rethinkdb',
     license='MIT',
-    url='https://github.com/dmpayton/reqlon',
+    url='https://github.com/dmpayton/reqon',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
