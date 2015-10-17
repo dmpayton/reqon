@@ -2,7 +2,7 @@
 ReQL Query Object Notation
 ==========================
 
-ReQON (/ˈriːkɒn/) lets you build basic `ReQL <http://rethinkdb.com/docs/introduction-to-reql/>`_
+ReQON (/ˈriːkɒn/, RE-kon) lets you build basic `ReQL <http://rethinkdb.com/docs/introduction-to-reql/>`_
 queries from JSON.
 
 I love RethinkDB, and ReQL is awesome and powerful, but sometimes you need to

@@ -3,8 +3,10 @@ import reqon
 import rethinkdb as r
 import unittest
 
+from .utils import ReQONTestMixin
 
-class GeoTests(unittest.TestCase):
+
+class GeoJSONToReQLTests(ReQONTestMixin, unittest.TestCase):
     def test_point(self):
         point = geojson.utils.generate_random('Point')
         reql1 = reqon.geo.geojson_to_reql(point)

@@ -1,11 +1,7 @@
 import rethinkdb as r
 
-from .filter import build
+from .build import build
 
-'''
-def (reql, value):
-    reql.(value)
-'''
 
 def filter(reql, value):
     return reql.filter(
