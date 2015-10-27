@@ -1,6 +1,5 @@
 import rethinkdb as r
 
-from .build import build_sequence, build_unary
 from .geo import geojson_to_reql
 
 
