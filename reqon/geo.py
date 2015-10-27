@@ -29,7 +29,7 @@ def is_valid(obj):
 def geojson_to_reql(data):
     GeoShape, reql_shape = GEO_TYPES[data.pop('type')]
     geometry = GeoShape(**data)
-    invalid_message = is_valid(geometry)['message']
-    if invalid_message:
-        raise ValueError(invalid_message)
+    output = is_valid(geometry)
+    if output['valid'] == 'no':
+        raise ValueError(output['message'])
     return reql_shape(data)

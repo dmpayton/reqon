@@ -1,12 +1,24 @@
 import rethinkdb as r
 
-from .build import build
+from .filter import build
 
 
 def filter(reql, value):
     return reql.filter(
         r.and_(*map(build, value))
     )
+
+
+def get(reql, value):
+    return reql.get(value)
+
+
+def get_all(reql, value):
+    index = 'id'
+    if len(value) == 2 and isinstance(value[1], list):
+        value, index = value
+    return reql.get_all(*value, index=index)
+
 
 def group(reql, value):
     return reql.group(value)
@@ -24,8 +36,8 @@ def nth(reql, value):
     return reql.nth(value)
 
 
-def offset(reql, value):
-    return reql.offset(value)
+def skip(reql, value):
+    return reql.skip(value)
 
 
 def pluck(reql, value):
@@ -46,10 +58,13 @@ def without(reql, value):
 
 TERMS = {
     '$filter': filter,
+    '$get': get,
+    '$get_all': get_all,
     '$group': group,
     '$has_fields': has_fields,
     '$limit': limit,
     '$nth': nth,
+    '$skip': skip,
     '$pluck': pluck,
     '$sample': sample,
     '$slice': slice,

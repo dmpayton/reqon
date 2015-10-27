@@ -10,10 +10,6 @@ class FilterFunctionTests(ReQONTestMixin, unittest.TestCase):
     def setUp(self):
         self.reql = r.table('movies')
 
-    def reqlify(self, func):
-        r.ast.Func.nextVarId = 1
-        return func()
-
     def test_ieq(self):
         reql1 = self.reqlify(lambda: reqon.filter.ieq(r.row['title'], 'star wars'))
         reql2 = self.reqlify(lambda: r.row['title'].coerce_to('string').match('(?i)^star wars$'))
