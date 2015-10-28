@@ -1,0 +1,14 @@
+language: python
+
+env:
+  - TOXENV=py27
+  - TOXENV=py34
+  - TOXENV=coverage
+
+install:
+  - pip install tox codecov
+
+script: tox
+
+after_success:
+  codecov
