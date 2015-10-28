@@ -2,9 +2,6 @@
 ReQL Query Object Notation
 ==========================
 
-ReQON (/ˈriːkɒn/, RE-kon) lets you build simple, read-only `RethinkDB <http://rethinkdb.com/>`_
-queries from JSON.
-
 .. image:: https://travis-ci.org/dmpayton/reqon.svg?branch=develop
     :target: https://travis-ci.org/dmpayton/reqon
     :alt: travis-ci.org
@@ -16,6 +13,9 @@ queries from JSON.
 .. image:: https://codecov.io/github/dmpayton/reqon/coverage.svg?branch=develop
     :target: https://codecov.io/github/dmpayton/reqon?branch=develop
     :alt: codecov.io
+
+ReQON (/ˈriːkɒn/, RE-kon) lets you build simple, read-only `RethinkDB <http://rethinkdb.com/>`_
+queries from JSON.
 
 I love RethinkDB, and ReQL is awesome and powerful, but sometimes you need to
 expose RethinkDB's querying capabilities through an HTTP API endpoint. ReQON
