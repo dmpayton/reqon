@@ -48,7 +48,7 @@ def limit(reql, value):
     return reql.limit(value)
 
 
-def slice(reql, value):
+def slice_(reql, value):
     return reql.slice(*value)
 
 
@@ -113,7 +113,7 @@ TERMS = {
     '$order_by': order_by,
     '$skip': skip,
     '$limit': limit,
-    '$slice': slice,
+    '$slice': slice_,
     '$nth': nth,
     '$sample': sample,
 
