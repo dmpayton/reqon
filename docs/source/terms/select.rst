@@ -29,15 +29,28 @@ $filter
 
 See: http://rethinkdb.com/api/python/filter/
 
+.. _$and:
+
 $and
 ----
 
 http://rethinkdb.com/api/python/and/
+
+.. _$or:
 
 $or
 ---
 
 See: http://rethinkdb.com/api/python/or/
 
-$and and $or
-------------
+.. _$not:
+
+$not
+----
+
+See: http://rethinkdb.com/api/python/not/
+
+.. _nesting-operators:
+
+Nesting operators
+-----------------
