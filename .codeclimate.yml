@@ -1,6 +1,5 @@
 languages:
   Python: true
-
 exclude_paths:
-  - docs/*
-  - tests/*
+- docs/*
+- tests/*
