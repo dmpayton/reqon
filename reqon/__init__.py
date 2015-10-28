@@ -1,6 +1,8 @@
 import rethinkdb as r
 
-from . import geo, filter, terms
+from . import geo, operators, terms
+from .operators import BOOLEAN, EXPRESSIONS
+from .terms import TERMS
 
 
 def query(query):
@@ -14,6 +16,6 @@ def query(query):
 
     for sequence in query['$query']:
         term = sequence[0]
-        reql = terms.TERMS[term](reql, *sequence[1:])
+        reql = TERMS[term](reql, *sequence[1:])
 
     return reql

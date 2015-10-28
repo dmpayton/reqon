@@ -5,8 +5,8 @@ from .geo import geojson_to_reql
 
 def build(node):
     op, value = node
-    if op in LOGIC_OPS:
-        builder, func = LOGIC_OPS[op]
+    if op in BOOLEAN:
+        builder, func = BOOLEAN[op]
         return builder(value, func)
     return build_attribute(op, value)
 
@@ -25,9 +25,9 @@ def build_attribute(attrs, value):
         row = row[attr]
 
     func = r.eq  # equality by default
-    if isinstance(value, list) and value[0] in BOOL_OPS:
+    if isinstance(value, list) and value[0] in EXPRESSIONS:
         op, value = value
-        func = BOOL_OPS[op]
+        func = EXPRESSIONS[op]
 
     return func(row, value)
 
@@ -70,13 +70,13 @@ def intersects(row, value):
     return row.intersects(shape)
 
 
-LOGIC_OPS = {
+BOOLEAN = {
     '$and': (build_sequence, r.and_),
     '$or': (build_sequence, r.or_),
     '$not': (build_unary, r.not_),
 }
 
-BOOL_OPS = {
+EXPRESSIONS = {
     '$eq': r.eq,
     '$ieq': ieq,
     '$ne': r.ne,
@@ -91,5 +91,5 @@ BOOL_OPS = {
     '$ends': ends,
     '$iends': iends,
     '$intersects': intersects,
-    '$includes': intersects,
+    '$includes': includes,
 }
