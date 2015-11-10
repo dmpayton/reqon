@@ -1,3 +1,4 @@
+import datetime
 import rethinkdb as r
 
 from .geo import geojson_to_reql
@@ -33,39 +34,72 @@ def build_attribute(attrs, value):
 
 
 def in_(row, value):
+    '''
+        ['score', ['$in', [1, 2, 3, 4]]
+    '''
     return r.expr(value).contains(row)
 
 
 def regex(row, value):
+    '''
+        ['name', ['$regex', '^D']]
+    '''
     return row.coerce_to('string').match(value)
 
 
 def ieq(row, value):
+    '''
+        ['name', ['$ieq', 'derek']]
+    '''
     return regex(row, '(?i)^{0}$'.format(value))
 
 
 def starts(row, value):
+    '''
+        ['name', ['$starts', 'D']]
+    '''
     return regex(row, '^{0}'.format(value))
 
 
 def istarts(row, value):
+    '''
+        ['name', ['$istarts', 'd']]
+    '''
     return regex(row, '(?i)^{0}'.format(value))
 
 
 def ends(row, value):
+    '''
+        ['name', ['$ends', 'Y']]
+    '''
     return regex(row, '{0}$'.format(value))
 
 
 def iends(row, value):
+    '''
+        ['name', ['$iends', 'y']]
+    '''
     return regex(row, '(?i){0}$'.format(value))
 
 
 def includes(row, value):
+    '''
+        ['area', ['$includes', {
+            'type': 'Point',
+            'coordinates': [-135.4078334251454, -38.32676733670448]
+        }]]
+    '''
     shape = geojson_to_reql(value)
     return row.includes(shape)
 
 
 def intersects(row, value):
+    '''
+        ['area', ['$intersects', {
+            'type': 'Polygon',
+            'coordinates': [[[-116, 28], [13, -26], [59, 58], [-116, 28]]]
+        }]]
+    '''
     shape = geojson_to_reql(value)
     return row.intersects(shape)
 

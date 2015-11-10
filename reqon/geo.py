@@ -8,9 +8,9 @@ class Circle(geojson.geometry.Geometry):
 
 
 GEO_TYPES = {
-    'Point': (geojson.Point, lambda geo: r.point(geo['coordinates'])),
+    'Point': (geojson.Point, lambda geo: r.point(*geo['coordinates'])),
     'LineString': (geojson.LineString, lambda geo: r.line(*geo['coordinates'])),
-    'Polygon': (geojson.Polygon, lambda geo: r.polygon(*geo['coordinates'])),
+    'Polygon': (geojson.Polygon, lambda geo: r.polygon(*geo['coordinates'][0])),
     'Circle': (Circle, lambda geo: r.circle(geo['coordinates'], radius=geo['radius'])),
 }
 

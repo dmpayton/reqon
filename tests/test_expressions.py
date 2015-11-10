@@ -48,11 +48,17 @@ class FilterFunctionTests(ReQONTestMixin, unittest.TestCase):
     def test_intersects(self):
         polygon = geojson.utils.generate_random('Polygon')
         reql1 = self.reqlify(lambda: reqon.EXPRESSIONS['$intersects'](r.row['location'], dict(polygon)))
-        reql2 = self.reqlify(lambda: r.row['location'].intersects(r.polygon(*polygon['coordinates'])))
+        reql2 = self.reqlify(lambda: r.row['location'].intersects(r.polygon(*polygon['coordinates'][0])))
         assert str(reql1) == str(reql2)
 
     def test_includes(self):
         point = geojson.utils.generate_random('Point')
         reql1 = self.reqlify(lambda: reqon.EXPRESSIONS['$includes'](r.row['location'], dict(point)))
-        reql2 = self.reqlify(lambda: r.row['location'].includes(r.point(point['coordinates'])))
+        reql2 = self.reqlify(lambda: r.row['location'].includes(r.point(*point['coordinates'])))
         assert str(reql1) == str(reql2)
+
+    # def test_modifiers(self):
+    #     # ['birthday.$date', ['$eq', ['$date', '1987-07-24']]]
+    #     reql1 = self.reqlify(lambda: reqon.EXPRESSIONS['$datetime'](r.row['birthday'], dict(point)))
+    #     reql2 = self.reqlify(lambda: r.eq(r.row['birthday'].date(), datetime.date(1987, 7, 24)))
+    #     assert str(reql1) == str(reql2)

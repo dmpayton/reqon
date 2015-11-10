@@ -1,6 +1,7 @@
 import rethinkdb as r
 
-from . import geo, operators, terms
+from . import coerce, geo, operators, terms
+from .coerce import coerce, COERSIONS
 from .operators import BOOLEAN, EXPRESSIONS
 from .terms import TERMS
 

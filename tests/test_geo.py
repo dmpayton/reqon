@@ -11,7 +11,7 @@ class GeoJSONToReQLTests(ReQONTestMixin, unittest.TestCase):
     def test_point(self):
         point = geojson.utils.generate_random('Point')
         reql1 = reqon.geo.geojson_to_reql(point)
-        reql2 = r.point(point['coordinates'])
+        reql2 = r.point(*point['coordinates'])
         assert str(reql1) == str(reql2)
 
     def test_line(self):
@@ -23,7 +23,7 @@ class GeoJSONToReQLTests(ReQONTestMixin, unittest.TestCase):
     def test_polygon(self):
         polygon = geojson.utils.generate_random('Polygon')
         reql1 = reqon.geo.geojson_to_reql(polygon)
-        reql2 = r.polygon(*polygon['coordinates'])
+        reql2 = r.polygon(*polygon['coordinates'][0])
         assert str(reql1) == str(reql2)
 
     def test_circle(self):
