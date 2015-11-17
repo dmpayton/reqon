@@ -1,6 +1,23 @@
 import rethinkdb as r
 
+from .coerce import coerce
 from .operators import build
+
+
+def expand_path(fields):
+    ''' Break a dot-notated path into a dict '''
+    fields = fields.split('.')
+    num_fields = len(fields)
+    if num_fields == 1:
+        return fields[0]
+    row = node = {}
+    for idx, field in enumerate(fields):
+        if idx + 1 == num_fields:
+            node[field] = True
+        else:
+            node[field] = {}
+            node = node[field]
+    return row
 
 
 # Selecting data
@@ -10,7 +27,7 @@ def get(reql, value):
     '''
         ['get', 'abc']
     '''
-    return reql.get(value)
+    return reql.get(coerce(value))
 
 
 def get_all(reql, value):
@@ -21,7 +38,7 @@ def get_all(reql, value):
     index = 'id'
     if len(value) == 2 and isinstance(value[1], list):
         index, value = value
-    return reql.get_all(*value, index=index)
+    return reql.get_all(*coerce(value), index=index)
 
 
 def filter_(reql, value):
@@ -42,6 +59,7 @@ def has_fields(reql, value):
     '''
         ['has_fields', ['name', 'birthday']]
     '''
+    value = [expand_path(path) for path in value]
     return reql.has_fields(*value)
 
 
@@ -49,6 +67,7 @@ def with_fields(reql, value):
     '''
         ['with_fields', ['name', 'birthday']]
     '''
+    value = [expand_path(path) for path in value]
     return reql.with_fields(*value)
 
 
@@ -59,7 +78,7 @@ def order_by(reql, value):
     '''
     if isinstance(value, list) and value[0] == '$index':
         return reql.order_by(index=value[1])
-    return reql.order_by(value)
+    return reql.order_by(expand_path(value))
 
 
 def skip(reql, value):
@@ -104,6 +123,7 @@ def pluck(reql, value):
     '''
         ['pluck', ['name', 'birthday']]
     '''
+    value = [expand_path(path) for path in value]
     return reql.pluck(*value)
 
 
@@ -111,6 +131,7 @@ def without(reql, value):
     '''
         ['without', ['name', 'birthday']]
     '''
+    value = [expand_path(path) for path in value]
     return reql.without(*value)
 
 
@@ -124,7 +145,7 @@ def group(reql, value):
     '''
     if isinstance(value, list) and value[0] == '$index':
         return reql.group(index=value[1])
-    return reql.group(value)
+    return reql.group(expand_path(value))
 
 
 def count(reql, value=None):
@@ -140,28 +161,28 @@ def sum_(reql, value):
     '''
         ['sum', 'counter']
     '''
-    return reql.sum(value)
+    return reql.sum(expand_path(value))
 
 
 def avg(reql, value):
     '''
         ['avg', 'points']
     '''
-    return reql.avg(value)
+    return reql.avg(expand_path(value))
 
 
 def min_(reql, value):
     '''
         ['min', 'points']
     '''
-    return reql.min(value)
+    return reql.min(expand_path(value))
 
 
 def max_(reql, value):
     '''
         ['max', 'points']
     '''
-    return reql.max(value)
+    return reql.max(expand_path(value))
 
 
 

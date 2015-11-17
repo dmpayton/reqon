@@ -1,12 +1,18 @@
-import json
+import datetime
 import dateutil.parser
+import json
+import pytz
 
 from .geo import geojson_to_reql
 
+TIMEZONES = {tz: pytz.timezone(tz) for tz in pytz.all_timezones}
+
 
 def coerce(value):
-    if isinstance(value, list) and len(value) == 2 and value[0] in COERSIONS:
-        return COERSIONS[value[0]](value[1])
+    if isinstance(value, list):
+        if len(value) == 2 and value[0] in COERSIONS:
+            return COERSIONS[value[0]](value[1])
+        return [coerce(item) for item in value]
     return value
 
 
@@ -14,14 +20,19 @@ def coerce_datetime(value):
     '''
         ['$datetime', '1987-07-24 9:07pm']
     '''
-    return dateutil.parser.parse(value)
+    value = dateutil.parser.parse(value, tzinfos=TIMEZONES)
+    if value.tzinfo is None:
+        value = pytz.utc.localize(value)
+    return value
 
 
 def coerce_date(value):
     '''
         ['$date', '1987-07-24']
     '''
-    return coerce_datetime(value).date()
+    value = coerce_datetime(value)
+    return datetime.datetime(value.year, value.month, value.day,
+        tzinfo=value.tzinfo)
 
 
 def coerce_time(value):

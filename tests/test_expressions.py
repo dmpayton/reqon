@@ -1,3 +1,4 @@
+import datetime
 import geojson
 import reqon
 import rethinkdb as r
@@ -57,8 +58,16 @@ class FilterFunctionTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: r.row['location'].includes(r.point(*point['coordinates'])))
         assert str(reql1) == str(reql2)
 
-    # def test_modifiers(self):
-    #     # ['birthday.$date', ['$eq', ['$date', '1987-07-24']]]
-    #     reql1 = self.reqlify(lambda: reqon.EXPRESSIONS['$datetime'](r.row['birthday'], dict(point)))
-    #     reql2 = self.reqlify(lambda: r.eq(r.row['birthday'].date(), datetime.date(1987, 7, 24)))
-    #     assert str(reql1) == str(reql2)
+    def test_modifiers(self):
+        # ['birthday.$date', ['$eq', ['$date', '1987-07-24']]]
+        reql1 = self.reqlify(lambda: reqon.MODIFIERS['$date'](r.row['birthday']))
+        reql2 = self.reqlify(lambda: r.row['birthday'].date())
+        assert str(reql1) == str(reql2)
+
+
+    def test_date_modifier(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$filter'](self.reql, [
+            ['birthday', ['$date', '1987-07-24']]
+        ]))
+        #reql2 = self.reqlify(lambda: self.reql.filter(r.and_(r.row['birthday'].date().eq(datetime.date(2987, 7, 24)))))
+        #assert str(reql1) == str(reql2)

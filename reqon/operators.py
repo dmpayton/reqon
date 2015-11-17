@@ -1,6 +1,7 @@
 import datetime
 import rethinkdb as r
 
+from .coerce import coerce
 from .geo import geojson_to_reql
 
 
@@ -22,13 +23,20 @@ def build_unary(node, func):
 
 def build_attribute(attrs, value):
     row = r.row
-    for attr in attrs.split('.'):
-        row = row[attr]
+    attrs = attrs.split('.')
+    for attr in attrs:
+        if attr in MODIFIERS:
+            row = MODIFIERS[attr](row)
+            break
+        else:
+            row = row[attr]
 
     func = r.eq  # equality by default
     if isinstance(value, list) and value[0] in EXPRESSIONS:
         op, value = value
         func = EXPRESSIONS[op]
+
+    value = coerce(value)
 
     return func(row, value)
 
@@ -126,4 +134,31 @@ EXPRESSIONS = {
     '$iends': iends,
     '$intersects': intersects,
     '$includes': includes,
+}
+
+
+def date_(row):
+    return row.date()
+
+
+def time_(row):
+    return row.date()
+
+
+def datetime_(row):
+    return row.date()
+
+MODIFIERS = {
+    # Datetime
+    '$date': lambda row: row.date(),
+    '$time': lambda row: row.time(),
+    '$year': lambda row: row.year(),
+    '$month': lambda row: row.month(),
+    '$day': lambda row: row.day(),
+    '$hours': lambda row: row.hours(),
+    '$minutes': lambda row: row.minutes(),
+    '$seconds': lambda row: row.seconds(),
+    '$day_of_month': lambda row: row.day_of_month(),
+    '$day_of_year': lambda row: row.day_of_year(),
+    '$timezone': lambda row: row.timezone(),
 }
