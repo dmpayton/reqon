@@ -136,18 +136,6 @@ EXPRESSIONS = {
     '$includes': includes,
 }
 
-
-def date_(row):
-    return row.date()
-
-
-def time_(row):
-    return row.date()
-
-
-def datetime_(row):
-    return row.date()
-
 MODIFIERS = {
     # Datetime
     '$date': lambda row: row.date(),
