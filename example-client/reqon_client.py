@@ -1,4 +1,5 @@
 import copy
+import datetime
 import json
 
 
@@ -28,25 +29,25 @@ class row(object):
         self.field = field
 
     def __eq__(self, other):
-        return [self.field, ['$eq', other]]
+        return [self.field, ['$eq', self._coerce(other)]]
 
     def __ne__(self, other):
-        return [self.field, ['$ne', other]]
+        return [self.field, ['$ne', self._coerce(other)]]
 
     def __lt__(self, other):
-        return [self.field, ['$lt', other]]
+        return [self.field, ['$lt', self._coerce(other)]]
 
     def __le__(self, other):
-        return [self.field, ['$le', other]]
+        return [self.field, ['$le', self._coerce(other)]]
 
     def __gt__(self, other):
-        return [self.field, ['$gt', other]]
+        return [self.field, ['$gt', self._coerce(other)]]
 
     def __ge__(self, other):
-        return [self.field, ['$ge', other]]
+        return [self.field, ['$ge', self._coerce(other)]]
 
     def __contains__(self, item):
-        return [self.field, ['$contains', item]]
+        return [self.field, ['$contains', self._coerce(item)]]
 
     def __getattr__(self, attr):
         if attr in self.operators:
@@ -62,8 +63,17 @@ class row(object):
 
     def _operator(self, operator):
         def inner(value):
-            return [self.field, ['${0}'.format(operator), value]]
+            return [self.field, ['${0}'.format(operator), self._coerce(value)]]
         return inner
+
+    def _coerce(self, value):
+        if isinstance(value, datetime.datetime):
+            return ['$datetime', str(value)]
+        if isinstance(value, datetime.date):
+            return ['$date', str(value)]
+        if isinstance(value, datetime.time):
+            return ['$time', str(value)]
+        return value
 
 
 class Query(object):
