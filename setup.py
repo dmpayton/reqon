@@ -29,5 +29,5 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages=find_packages(),
-    install_requires=['geojson', 'rethinkdb'],
+    install_requires=['geojson', 'rethinkdb', 'six'],
 )

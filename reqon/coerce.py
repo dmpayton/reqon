@@ -2,6 +2,7 @@ import datetime
 import dateutil.parser
 import json
 import pytz
+import six
 
 from .geo import geojson_to_reql
 
@@ -43,7 +44,7 @@ def coerce_time(value):
 
 
 def coerce_geojson(value):
-    if isinstance(value, basestring):
+    if isinstance(value, six.string_types):
         value = json.loads(value)
     return geojson_to_reql(value)
 

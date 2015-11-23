@@ -5,6 +5,7 @@ pytest-cov
 pytest-pep8
 pytest-pythonpath
 rethinkdb
+six
 sphinx
 sphinx_rtd_theme
 tox
