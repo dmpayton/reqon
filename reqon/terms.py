@@ -47,9 +47,11 @@ def filter_(reql, value):
             ...
         ]]
     '''
-    return reql.filter(
-        r.and_(*map(build, value))
-    )
+    if value:
+        return reql.filter(
+            r.and_(*map(build, value))
+        )
+    return reql
 
 
 # Transformations
