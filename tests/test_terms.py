@@ -1,7 +1,9 @@
 import reqon
 import rethinkdb as r
 import unittest
+import pytest
 
+from reqon import terms
 from .utils import ReQONTestMixin
 
 
@@ -9,6 +11,16 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
     def setUp(self):
         self.reql = r.table('movies')
 
+    def test_expand_path(self):
+        expanded = terms.expand_path('foo.bar.baz')
+        expected = {'foo': { 'bar': { 'baz': True } } }
+        assert expected == expanded
+
+    def test_expand_path_invalid_type(self):
+        with pytest.raises(TypeError) as excinfo:
+            terms.expand_path(1)
+        assert 'Invalid type passed to expand_path. Must be a String', excinfo.value
+        
     def test_get(self):
         reql1 = self.reqlify(lambda: reqon.TERMS['$get'](self.reql, '123'))
         reql2 = self.reqlify(lambda: self.reql.get('123'))

@@ -1,4 +1,5 @@
 import rethinkdb as r
+import six
 
 from .coerce import coerce
 from .operators import build
@@ -6,6 +7,9 @@ from .operators import build
 
 def expand_path(fields):
     ''' Break a dot-notated path into a dict '''
+    if not isinstance(fields, six.string_types):
+        raise TypeError('Invalid type passed to expand_path. Must be a String')
+
     fields = fields.split('.')
     num_fields = len(fields)
     if num_fields == 1:
