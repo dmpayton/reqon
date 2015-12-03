@@ -6,8 +6,7 @@ from .exceptions import TypeError
 from .utils import dict_in
 
 
-
-def expand_path(fields):
+def _expand_path(fields):
     '''
         Break a dot-notated path into a dict
 
@@ -48,13 +47,14 @@ def get(reql, value):
         ['$get', 'abc']
 
         Arguments:
+        reql -- The reql query to append to
         value -- One of a Number, String, Boolean, or List of one of these
 
         Returns:
         A copy of the reql query with the "get" method appended
 
         Exceptions:
-        Raises a "reqon.exceptions.TypeError" if the value is invalid
+        Raises a "reqon.exceptions.TypeError" if the value contains a dict
     '''
 
     if isinstance(value, dict) or dict_in(value):
@@ -64,8 +64,22 @@ def get(reql, value):
 
 def get_all(reql, value):
     '''
-        ['get_all', ['abc', '123', ...]]
-        ['get_all', ['name', ['abc', '123', ...]]]
+        Add a "get_all" method to the query
+        ['$get_all', ['abc', '123', ...]]
+        ['$get_all', ['name', ['abc', '123', ...]]]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- A list containing one of the following:
+            * The id's of the documents to retrieve
+            * The index to use when fetching documents as the first element
+              in the list, followed by another list of values to match on.
+
+        Returns:
+        A copy of the reql query with the "get_all" method appended
+
+        Exceptions:
+        No custom exceptions are currently raised
     '''
     index = 'id'
     if len(value) == 2 and isinstance(value[1], list):
@@ -93,7 +107,7 @@ def has_fields(reql, value):
     '''
         ['has_fields', ['name', 'birthday']]
     '''
-    value = [expand_path(path) for path in value]
+    value = [_expand_path(path) for path in value]
     return reql.has_fields(*value)
 
 
@@ -101,7 +115,7 @@ def with_fields(reql, value):
     '''
         ['with_fields', ['name', 'birthday']]
     '''
-    value = [expand_path(path) for path in value]
+    value = [_expand_path(path) for path in value]
     return reql.with_fields(*value)
 
 
@@ -112,7 +126,7 @@ def order_by(reql, value):
     '''
     if isinstance(value, list) and value[0] == '$index':
         return reql.order_by(index=value[1])
-    return reql.order_by(expand_path(value))
+    return reql.order_by(_expand_path(value))
 
 
 def skip(reql, value):
@@ -157,7 +171,7 @@ def pluck(reql, value):
     '''
         ['pluck', ['name', 'birthday']]
     '''
-    value = [expand_path(path) for path in value]
+    value = [_expand_path(path) for path in value]
     return reql.pluck(*value)
 
 
@@ -165,7 +179,7 @@ def without(reql, value):
     '''
         ['without', ['name', 'birthday']]
     '''
-    value = [expand_path(path) for path in value]
+    value = [_expand_path(path) for path in value]
     return reql.without(*value)
 
 
@@ -179,7 +193,7 @@ def group(reql, value):
     '''
     if isinstance(value, list) and value[0] == '$index':
         return reql.group(index=value[1])
-    return reql.group(expand_path(value))
+    return reql.group(_expand_path(value))
 
 
 def count(reql, value=None):
@@ -195,28 +209,28 @@ def sum_(reql, value):
     '''
         ['sum', 'counter']
     '''
-    return reql.sum(expand_path(value))
+    return reql.sum(_expand_path(value))
 
 
 def avg(reql, value):
     '''
         ['avg', 'points']
     '''
-    return reql.avg(expand_path(value))
+    return reql.avg(_expand_path(value))
 
 
 def min_(reql, value):
     '''
         ['min', 'points']
     '''
-    return reql.min(expand_path(value))
+    return reql.min(_expand_path(value))
 
 
 def max_(reql, value):
     '''
         ['max', 'points']
     '''
-    return reql.max(expand_path(value))
+    return reql.max(_expand_path(value))
 
 
 
