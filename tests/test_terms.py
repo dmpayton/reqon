@@ -17,14 +17,23 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert expected == expanded
 
     def test_expand_path_invalid_type(self):
-        with pytest.raises(TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
             terms.expand_path(1)
-        assert 'Invalid type passed to expand_path. Must be a String', excinfo.value
-        
+        assert terms.ERRORS['type']['string'].format('expand_path') == str(excinfo.value)
+
     def test_get(self):
         reql1 = self.reqlify(lambda: reqon.TERMS['$get'](self.reql, '123'))
         reql2 = self.reqlify(lambda: self.reql.get('123'))
         assert str(reql1) == str(reql2)
+
+    def test_get_invalid_type(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.get(self.reql, { "foo": "bar" })
+        assert terms.ERRORS['type']['invalid'].format('get') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.get(self.reql, [1, 2, {"foo": "bar"}])
+        assert terms.ERRORS['type']['invalid'].format('get') == str(excinfo.value)
 
     def test_get_all(self):
         reql1 = self.reqlify(lambda: reqon.TERMS['$get_all'](self.reql, ['123', '456']))

@@ -1,27 +1,42 @@
 import rethinkdb as r
-import six
 
 from .coerce import coerce
 from .operators import build
+from .exceptions import TypeError
+from .utils import dict_in
+
 
 
 def expand_path(fields):
-    ''' Break a dot-notated path into a dict '''
-    if not isinstance(fields, six.string_types):
-        raise TypeError('Invalid type passed to expand_path. Must be a String')
+    '''
+        Break a dot-notated path into a dict
 
-    fields = fields.split('.')
-    num_fields = len(fields)
-    if num_fields == 1:
-        return fields[0]
-    row = node = {}
-    for idx, field in enumerate(fields):
-        if idx + 1 == num_fields:
-            node[field] = True
-        else:
-            node[field] = {}
-            node = node[field]
-    return row
+        Arguments:
+        fields -- a string containing one or more dot-notated paths ('foo.bar')
+
+        Returns:
+        A dictionary representing the dot-notated paths
+        { "foo": { "bar": True } }
+
+        Exceptions:
+        Raises a "reqon.exceptions.TypeError" if the argument is not a String
+    '''
+
+    try:
+        fields = fields.split('.')
+        num_fields = len(fields)
+        if num_fields == 1:
+            return fields[0]
+        row = node = {}
+        for idx, field in enumerate(fields):
+            if idx + 1 == num_fields:
+                node[field] = True
+            else:
+                node[field] = {}
+                node = node[field]
+        return row
+    except:
+        raise TypeError(ERRORS['type']['string'].format('expand_path'))
 
 
 # Selecting data
@@ -29,8 +44,21 @@ def expand_path(fields):
 
 def get(reql, value):
     '''
-        ['get', 'abc']
+        Add a "get" method to the query
+        ['$get', 'abc']
+
+        Arguments:
+        value -- One of a Number, String, Boolean, or List of one of these
+
+        Returns:
+        A copy of the reql query with the "get" method appended
+
+        Exceptions:
+        Raises a "reqon.exceptions.TypeError" if the value is invalid
     '''
+
+    if isinstance(value, dict) or dict_in(value):
+        raise TypeError(ERRORS['type']['invalid'].format('get'))
     return reql.get(coerce(value))
 
 
@@ -215,4 +243,11 @@ TERMS = {
     '$avg': avg,
     '$min': min_,
     '$max': max_,
+}
+
+ERRORS = {
+    'type': {
+        'string': "Invalid type passed to {0}. Must be a String.",
+        'invalid': "Invalid type passed to {0}. Must be either a Number, String, Boolean, or Array"
+    }
 }
