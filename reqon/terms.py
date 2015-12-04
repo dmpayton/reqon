@@ -2,7 +2,7 @@ import rethinkdb as r
 
 from .coerce import coerce
 from .operators import build
-from .exceptions import TypeError
+from .exceptions import *
 from .utils import dict_in
 
 
@@ -89,14 +89,30 @@ def get_all(reql, value):
 
 def filter_(reql, value):
     '''
-        ['filter', [
+        Adds a filter to the query
+        ['$filter', [
             ...
         ]]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The filter values to apply. This must be a list.
+
+        Returns:
+        A copy of the reql query with the filter(s) appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.InvalidFilterError' if any of the filters
+        are invalid.
     '''
     if value:
-        return reql.filter(
-            r.and_(*map(build, value))
-        )
+        try:
+            return reql.filter(
+                r.and_(*map(build, value))
+            )
+        except:
+            raise InvalidFilterError(ERRORS['filter']['invalid'].format(value))
+
     return reql
 
 
@@ -105,7 +121,18 @@ def filter_(reql, value):
 
 def has_fields(reql, value):
     '''
-        ['has_fields', ['name', 'birthday']]
+        Adds a 'has_fields' filter to the query
+        ['$has_fields', ['name', 'birthday']]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The fields to include
+
+        Returns:
+        A copy of the reql query with the 'has_fields' filter appended
+
+        Exceptions:
+        No custom exceptions are currently raised
     '''
     value = [_expand_path(path) for path in value]
     return reql.has_fields(*value)
@@ -113,7 +140,18 @@ def has_fields(reql, value):
 
 def with_fields(reql, value):
     '''
-        ['with_fields', ['name', 'birthday']]
+        Adds a 'with_fields' filter to the query
+        ['$with_fields', ['name', 'birthday']]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The fields to include
+
+        Returns:
+        A copy of the reql query with the 'with_fields' filter appended
+
+        Exceptions:
+        No custom exceptions are currently raised
     '''
     value = [_expand_path(path) for path in value]
     return reql.with_fields(*value)
@@ -121,8 +159,19 @@ def with_fields(reql, value):
 
 def order_by(reql, value):
     '''
-        ['order_by', 'name']
-        ['order_by', ['$index', 'name']]
+        Adds an 'order_by' filter to the query
+        ['$order_by', 'name']
+        ['$order_by', ['$index', 'name']]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The field(s) to order by
+
+        Returns:
+        A copy of the reql query with the 'order_by' filter appended
+
+        Exceptions:
+        No custom exceptions are currently raised
     '''
     if isinstance(value, list) and value[0] == '$index':
         return reql.order_by(index=value[1])
@@ -263,5 +312,8 @@ ERRORS = {
     'type': {
         'string': "Invalid type passed to {0}. Must be a String.",
         'invalid': "Invalid type passed to {0}. Must be either a Number, String, Boolean, or Array"
+    },
+    'filter': {
+        'invalid': "Invalid filter ReQON filter - {0} - passed to ReQON"
     }
 }

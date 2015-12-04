@@ -1,7 +1,6 @@
 dateutils
 geojson
 pytest
-pytest-bdd
 pytest-cov
 pytest-pep8
 pytest-pythonpath

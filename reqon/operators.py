@@ -3,7 +3,6 @@ import rethinkdb as r
 
 from .coerce import coerce
 from .geo import geojson_to_reql
-from .exceptions import InvalidExpressionError
 
 
 def build(node):

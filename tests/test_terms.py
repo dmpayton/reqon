@@ -62,10 +62,17 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
 
     def test_filter(self):
         reql1 = self.reqlify(lambda: reqon.TERMS['$filter'](self.reql, [
-            ['rank', ['$gt', 8]]
+            ['rank', ['$gt', 8]],
+            ['age', ['$lt', 6]]
         ]))
-        reql2 = self.reqlify(lambda: self.reql.filter(r.and_(r.row['rank'].gt(8))))
+        reql2 = self.reqlify(lambda: self.reql.filter(r.and_(r.row['rank'].gt(8), r.row['age'].lt(6))))
         assert str(reql1) == str(reql2)
+
+
+    def test_invalid_filter(self):
+        with pytest.raises(reqon.exceptions.InvalidFilterError) as excinfo:
+            terms.filter_(self.reql, [{ 'foo': 'bar' }])
+        assert terms.ERRORS['filter']['invalid'].format("[{'foo': 'bar'}]") == str(excinfo.value)
 
 
     # Has Fields
