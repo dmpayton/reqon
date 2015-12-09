@@ -115,6 +115,15 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.skip(100))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_skip(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.skip(self.reql, "4")
+        assert terms.ERRORS['type']['int'].format('skip') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.skip(self.reql, 1.4)
+        assert terms.ERRORS['type']['int'].format('skip') == str(excinfo.value)
+
 
     # Limit
 
@@ -124,6 +133,14 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.limit(100))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_limit(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.limit(self.reql, "10")
+        assert terms.ERRORS['type']['int'].format('limit') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.limit(self.reql, 10.5)
+        assert terms.ERRORS['type']['int'].format('limit') == str(excinfo.value)
 
     # Slice
 
@@ -132,6 +149,19 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql1 = self.reqlify(lambda: reqon.TERMS['$slice'](self.reql, [10, 20]))
         reql2 = self.reqlify(lambda: self.reql.slice(10, 20))
         assert str(reql1) == str(reql2)
+
+    def test_invalid_slice(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.slice_(self.reql, 10)
+        assert terms.ERRORS['type']['invalid'].format('slice') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.slice_(self.reql, [10.4, 10])
+        assert terms.ERRORS['type']['invalid'].format('slice') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.slice_(self.reql, ["10", 20])
+        assert terms.ERRORS['type']['invalid'].format('slice') == str(excinfo.value)
 
 
     # Nth
@@ -142,6 +172,14 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.nth(100))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_nth(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.nth(self.reql, "10")
+        assert terms.ERRORS['type']['int'].format('nth') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.nth(self.reql, 10.5)
+        assert terms.ERRORS['type']['int'].format('nth') == str(excinfo.value)
 
     # Sample
 
@@ -150,6 +188,15 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql1 = self.reqlify(lambda: reqon.TERMS['$sample'](self.reql, 10))
         reql2 = self.reqlify(lambda: self.reql.sample(10))
         assert str(reql1) == str(reql2)
+
+    def test_invalid_sample(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.sample(self.reql, "10")
+        assert terms.ERRORS['type']['int'].format('sample') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.sample(self.reql, 10.5)
+        assert terms.ERRORS['type']['int'].format('sample') == str(excinfo.value)
 
 
     # Pluck
@@ -160,6 +207,15 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.pluck('title', 'year'))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_pluck(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.pluck(self.reql, "10")
+        assert terms.ERRORS['type']['invalid'].format('pluck') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.pluck(self.reql, ["10", 1])
+        assert terms.ERRORS['type']['invalid'].format('pluck') == str(excinfo.value)
+
 
     # Without
 
@@ -169,6 +225,14 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.without('title', 'year'))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_without(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.without(self.reql, "10")
+        assert terms.ERRORS['type']['invalid'].format('without') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.without(self.reql, ["10", 1])
+        assert terms.ERRORS['type']['invalid'].format('without') == str(excinfo.value)
 
     # Group
 

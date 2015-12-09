@@ -1,4 +1,5 @@
 import rethinkdb as r
+import six
 
 from .coerce import coerce
 from .operators import build
@@ -180,36 +181,103 @@ def order_by(reql, value):
 
 def skip(reql, value):
     '''
-        ['skip', 10]
+        Adds a 'skip' filter to the query
+        ['$skip', 10]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The number of records to skip
+
+        Returns:
+        A copy of the reql query with the 'skip' filter appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if value is not an integer
     '''
+    if not isinstance(value, int):
+        raise TypeError(ERRORS['type']['int'].format('skip'))
     return reql.skip(value)
 
 
 def limit(reql, value):
     '''
-        ['limit', 10]
+        Adds a 'limit' filter to the query
+        ['$limit', 10]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The maximum number of records to retrieve
+
+        Returns:
+        A copy of the reql query with the 'limit' filter appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not an integer
     '''
+    if not isinstance(value, int):
+        raise TypeError(ERRORS['type']['int'].format('limit'))
     return reql.limit(value)
 
 
 def slice_(reql, value):
     '''
-        ['slice', [10, 20]]
+        Adds a 'slice' filter to the query
+        ['$slice', [10, 20]]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- A list of integers, noting the starting and ending indices
+        to return from the query
+
+        Returns:
+        A copy of the reql query with the 'slice' filter appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a list of integers
     '''
-    return reql.slice(*value)
+    if isinstance(value, list) and all(isinstance(x, int) for x in value):
+        return reql.slice(*value)
+    else:
+        raise TypeError(ERRORS['type']['invalid'].format('slice'))
 
 
 def nth(reql, value):
     '''
-        ['nth', 10]
+        Adds an 'nth' filter to the query
+        ['$nth', 10]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- An integer indicating the `nth` value to return from the query
+
+        Returns:
+        A copy of the reql query with the 'nth' filter appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not an integer
     '''
+    if not isinstance(value, int):
+        raise TypeError(ERRORS['type']['int'].format('nth'))
     return reql.nth(value)
 
 
 def sample(reql, value):
     '''
-        ['sample', 10]
+        Adds a 'sample' filter to the query
+        ['$sample', 10]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- An integer indicating the number of values to sample from the result
+
+        Returns:
+        A copy of the reql query with the 'sample' filter appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not an integer
     '''
+    if not isinstance(value, int):
+        raise TypeError(ERRORS['type']['int'].format('sample'))
     return reql.sample(value)
 
 
@@ -218,18 +286,46 @@ def sample(reql, value):
 
 def pluck(reql, value):
     '''
-        ['pluck', ['name', 'birthday']]
+        Adds a 'pluck' filter to the query
+        ['$pluck', ['name', 'birthday']]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- A list of strings indicating the field names to return
+
+        Returns:
+        A copy of the reql query with the 'pluck' filter appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a list of strings
     '''
-    value = [_expand_path(path) for path in value]
-    return reql.pluck(*value)
+    if isinstance(value, list) and all(isinstance(x, six.string_types) for x in value):
+        value = [_expand_path(path) for path in value]
+        return reql.pluck(*value)
+    else:
+        raise TypeError(ERRORS['type']['invalid'].format('pluck'))
 
 
 def without(reql, value):
     '''
-        ['without', ['name', 'birthday']]
+        Adds a 'without' filter to the query
+        ['$without', ['name', 'birthday']]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- A list of strings indicating the fields to omit from the response
+
+        Returns:
+        A copy of the reql query with the 'without' filter appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a list of strings
     '''
-    value = [_expand_path(path) for path in value]
-    return reql.without(*value)
+    if isinstance(value, list) and all(isinstance(x, six.string_types) for x in value):
+        value = [_expand_path(path) for path in value]
+        return reql.without(*value)
+    else:
+        raise TypeError(ERRORS['type']['invalid'].format('without'))
 
 
 # Aggregation
@@ -311,7 +407,8 @@ TERMS = {
 ERRORS = {
     'type': {
         'string': "Invalid type passed to {0}. Must be a String.",
-        'invalid': "Invalid type passed to {0}. Must be either a Number, String, Boolean, or Array"
+        'invalid': "Invalid type passed to {0}. Must be either a Number, String, Boolean, or Array",
+        'int': "Invalid type passed to {0}. Must be a Integer."
     },
     'filter': {
         'invalid': "Invalid filter ReQON filter - {0} - passed to ReQON"
