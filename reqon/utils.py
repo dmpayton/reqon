@@ -8,7 +8,4 @@ def dict_in(value):
         Returns:
         A Boolean
     '''
-    for item in value:
-        if isinstance(item, dict):
-            return True
-    return False
+    return any(isinstance(item, dict) for item in value)
