@@ -247,6 +247,15 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.group(index='rating'))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_group(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.group(self.reql, 1)
+        assert terms.ERRORS['type']['invalid'].format('group') == str(excinfo.value)
+
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.group(self.reql, ["$index", 1])
+        assert terms.ERRORS['type']['invalid'].format('group') == str(excinfo.value)
+
 
     # Count
 
@@ -270,6 +279,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.sum('rating'))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_sum(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.sum_(self.reql, 1)
+        assert terms.ERRORS['type']['string'].format('sum') == str(excinfo.value)
+
 
     # Avg
 
@@ -278,6 +292,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql1 = self.reqlify(lambda: reqon.TERMS['$avg'](self.reql, 'rating'))
         reql2 = self.reqlify(lambda: self.reql.avg('rating'))
         assert str(reql1) == str(reql2)
+
+    def test_invalid_avg(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.avg(self.reql, 1)
+        assert terms.ERRORS['type']['string'].format('avg') == str(excinfo.value)
 
 
     # Min
@@ -288,6 +307,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.min('rating'))
         assert str(reql1) == str(reql2)
 
+    def test_invalid_min_(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.min_(self.reql, 1)
+        assert terms.ERRORS['type']['string'].format('min') == str(excinfo.value)
+
 
     # Max
 
@@ -296,3 +320,8 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql1 = self.reqlify(lambda: reqon.TERMS['$max'](self.reql, 'rating'))
         reql2 = self.reqlify(lambda: self.reql.max('rating'))
         assert str(reql1) == str(reql2)
+
+    def test_invalid_max_(self):
+        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+            terms.max_(self.reql, 1)
+        assert terms.ERRORS['type']['string'].format('max') == str(excinfo.value)

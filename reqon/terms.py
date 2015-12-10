@@ -333,17 +333,45 @@ def without(reql, value):
 
 def group(reql, value):
     '''
-        ['group', 'birthday']
-        ['group', ['$index', 'birthday']]
+        Adds a 'group' aggregation to the query
+        ['$group', 'birthday']
+        ['$group', ['$index', 'birthday']]
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- A string or list of [<index>, <string>] to group by
+
+        Returns:
+        A copy of the reql query with the 'group' aggregation appended
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a string or list of strings
     '''
     if isinstance(value, list) and value[0] == '$index':
-        return reql.group(index=value[1])
-    return reql.group(_expand_path(value))
+        if all(isinstance(x, six.string_types) for x in value):
+            return reql.group(index=value[1])
+        else:
+            raise TypeError(ERRORS['type']['invalid'].format('group'))
+    else:
+        if isinstance(value, six.string_types):
+            return reql.group(_expand_path(value))
+        else:
+            raise TypeError(ERRORS['type']['invalid'].format('group'))
 
 
 def count(reql, value=None):
     '''
-        ['count']
+        Adds a 'count' aggregation to the query
+        ['$count']
+
+        Arguments:
+        reql -- The reql query to append to
+
+        Returns:
+        The reql query with the 'count' aggregation appended to it
+
+        Exceptions:
+        Does not raise a custom exception
     '''
     if value:
         return reql.count(value)
@@ -352,31 +380,86 @@ def count(reql, value=None):
 
 def sum_(reql, value):
     '''
-        ['sum', 'counter']
+        Adds a 'sum' aggregation to the query
+        ['$sum', 'counter']
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The field to sum by
+
+        Returns:
+        The reql query with the 'sum' aggregation appended to it
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a string
     '''
-    return reql.sum(_expand_path(value))
+    if isinstance(value, six.string_types):
+        return reql.sum(_expand_path(value))
+    else:
+        raise TypeError(ERRORS['type']['string'].format('sum'))
 
 
 def avg(reql, value):
     '''
-        ['avg', 'points']
+        Adds an 'avg' aggregation to the query
+        ['$avg', 'points']
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The field to avg by
+
+        Returns:
+        The reql query with the 'sum' aggregation appended to it
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a string
     '''
-    return reql.avg(_expand_path(value))
+    if isinstance(value, six.string_types):
+        return reql.avg(_expand_path(value))
+    else:
+        raise TypeError(ERRORS['type']['string'].format('avg'))
 
 
 def min_(reql, value):
     '''
-        ['min', 'points']
+        Adds a 'min' aggregation to the query
+        ['$min', 'points']
+
+        Arguments:
+        reql -- The reql query to append to
+        value -- The field to min by
+
+        Returns:
+        The reql query with the 'min' aggregation appended to it
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a string
     '''
-    return reql.min(_expand_path(value))
+    if isinstance(value, six.string_types):
+        return reql.min(_expand_path(value))
+    else:
+        raise TypeError(ERRORS['type']['string'].format('min'))
 
 
 def max_(reql, value):
     '''
-        ['max', 'points']
-    '''
-    return reql.max(_expand_path(value))
+        Adds a 'max' aggregation to the query
+        ['$max', 'points']
 
+        Arguments:
+        reql -- The reql query to append to
+        value -- The field to max by
+
+        Returns:
+        The reql query with the 'max' aggregation appended to it
+
+        Exceptions:
+        Raises a 'reqon.exceptions.TypeError' if the value is not a string
+    '''
+    if isinstance(value, six.string_types):
+        return reql.max(_expand_path(value))
+    else:
+        raise TypeError(ERRORS['type']['string'].format('max'))
 
 
 TERMS = {
