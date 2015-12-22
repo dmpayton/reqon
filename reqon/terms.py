@@ -3,9 +3,29 @@ import six
 
 from .coerce import coerce
 from .operators import build
-from .exceptions import *
+from .exceptions import InvalidTypeError, InvalidFilterError
 from .utils import dict_in
 
+
+def type_check(*args):
+    outer_args = args
+
+    def checker(func):
+        def wrapper(*args):
+            if outer_args[0] == six.string_types:
+                if not isinstance(args[1], six.string_types):
+                    raise InvalidTypeError(ERRORS['type']['string'].format(func.__name__))
+            elif outer_args[0] == list:
+                if not isinstance(args[1], list):
+                    raise InvalidTypeError(ERRORS['type']['invalid'].format(func.__name__))
+                if not all(isinstance(x, outer_args[1]) for x in args[1]):
+                    raise InvalidTypeError(ERRORS['type']['invalid'].format(func.__name__))
+            else:
+                if not isinstance(args[1], outer_args[0]):
+                    raise InvalidTypeError(ERRORS['type'][outer_args[0].__name__].format(func.__name__))
+            return func(*args)
+        return wrapper
+    return checker
 
 def _expand_path(fields):
     '''
@@ -19,7 +39,7 @@ def _expand_path(fields):
         { "foo": { "bar": True } }
 
         Exceptions:
-        Raises a "reqon.exceptions.TypeError" if the argument is not a String
+        Raises a "reqon.exceptions.InvalidTypeError" if the argument is not a String
     '''
 
     try:
@@ -36,7 +56,7 @@ def _expand_path(fields):
                 node = node[field]
         return row
     except:
-        raise TypeError(ERRORS['type']['string'].format('expand_path'))
+        raise InvalidTypeError(ERRORS['type']['string'].format('expand_path'))
 
 
 # Selecting data
@@ -55,11 +75,11 @@ def get(reql, value):
         A copy of the reql query with the "get" method appended
 
         Exceptions:
-        Raises a "reqon.exceptions.TypeError" if the value contains a dict
+        Raises a "reqon.exceptions.InvalidTypeError" if the value contains a dict
     '''
 
     if isinstance(value, dict) or dict_in(value):
-        raise TypeError(ERRORS['type']['invalid'].format('get'))
+        raise InvalidTypeError(ERRORS['type']['invalid'].format('get'))
     return reql.get(coerce(value))
 
 
@@ -179,6 +199,7 @@ def order_by(reql, value):
     return reql.order_by(_expand_path(value))
 
 
+@type_check(int)
 def skip(reql, value):
     '''
         Adds a 'skip' filter to the query
@@ -192,13 +213,12 @@ def skip(reql, value):
         A copy of the reql query with the 'skip' filter appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if value is not an integer
+        Raises a 'reqon.exceptions.InvalidTypeError' if value is not an integer
     '''
-    if not isinstance(value, int):
-        raise TypeError(ERRORS['type']['int'].format('skip'))
     return reql.skip(value)
 
 
+@type_check(int)
 def limit(reql, value):
     '''
         Adds a 'limit' filter to the query
@@ -212,13 +232,11 @@ def limit(reql, value):
         A copy of the reql query with the 'limit' filter appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not an integer
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not an integer
     '''
-    if not isinstance(value, int):
-        raise TypeError(ERRORS['type']['int'].format('limit'))
     return reql.limit(value)
 
-
+@type_check(list, int)
 def slice_(reql, value):
     '''
         Adds a 'slice' filter to the query
@@ -233,14 +251,12 @@ def slice_(reql, value):
         A copy of the reql query with the 'slice' filter appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a list of integers
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a list of integers
     '''
-    if isinstance(value, list) and all(isinstance(x, int) for x in value):
-        return reql.slice(*value)
-    else:
-        raise TypeError(ERRORS['type']['invalid'].format('slice'))
+    return reql.slice(*value)
 
 
+@type_check(int)
 def nth(reql, value):
     '''
         Adds an 'nth' filter to the query
@@ -254,13 +270,12 @@ def nth(reql, value):
         A copy of the reql query with the 'nth' filter appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not an integer
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not an integer
     '''
-    if not isinstance(value, int):
-        raise TypeError(ERRORS['type']['int'].format('nth'))
     return reql.nth(value)
 
 
+@type_check(int)
 def sample(reql, value):
     '''
         Adds a 'sample' filter to the query
@@ -274,16 +289,15 @@ def sample(reql, value):
         A copy of the reql query with the 'sample' filter appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not an integer
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not an integer
     '''
-    if not isinstance(value, int):
-        raise TypeError(ERRORS['type']['int'].format('sample'))
     return reql.sample(value)
 
 
 # Manipulation
 
 
+@type_check(list, six.string_types)
 def pluck(reql, value):
     '''
         Adds a 'pluck' filter to the query
@@ -297,15 +311,13 @@ def pluck(reql, value):
         A copy of the reql query with the 'pluck' filter appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a list of strings
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a list of strings
     '''
-    if isinstance(value, list) and all(isinstance(x, six.string_types) for x in value):
-        value = [_expand_path(path) for path in value]
-        return reql.pluck(*value)
-    else:
-        raise TypeError(ERRORS['type']['invalid'].format('pluck'))
+    value = [_expand_path(path) for path in value]
+    return reql.pluck(*value)
 
 
+@type_check(list, six.string_types)
 def without(reql, value):
     '''
         Adds a 'without' filter to the query
@@ -319,13 +331,10 @@ def without(reql, value):
         A copy of the reql query with the 'without' filter appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a list of strings
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a list of strings
     '''
-    if isinstance(value, list) and all(isinstance(x, six.string_types) for x in value):
-        value = [_expand_path(path) for path in value]
-        return reql.without(*value)
-    else:
-        raise TypeError(ERRORS['type']['invalid'].format('without'))
+    value = [_expand_path(path) for path in value]
+    return reql.without(*value)
 
 
 # Aggregation
@@ -345,18 +354,18 @@ def group(reql, value):
         A copy of the reql query with the 'group' aggregation appended
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a string or list of strings
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a string or list of strings
     '''
     if isinstance(value, list) and value[0] == '$index':
         if all(isinstance(x, six.string_types) for x in value):
             return reql.group(index=value[1])
         else:
-            raise TypeError(ERRORS['type']['invalid'].format('group'))
+            raise InvalidTypeError(ERRORS['type']['invalid'].format('group'))
     else:
         if isinstance(value, six.string_types):
             return reql.group(_expand_path(value))
         else:
-            raise TypeError(ERRORS['type']['invalid'].format('group'))
+            raise InvalidTypeError(ERRORS['type']['invalid'].format('group'))
 
 
 def count(reql, value=None):
@@ -378,6 +387,7 @@ def count(reql, value=None):
     return reql.count()
 
 
+@type_check(six.string_types)
 def sum_(reql, value):
     '''
         Adds a 'sum' aggregation to the query
@@ -391,14 +401,12 @@ def sum_(reql, value):
         The reql query with the 'sum' aggregation appended to it
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a string
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a string
     '''
-    if isinstance(value, six.string_types):
-        return reql.sum(_expand_path(value))
-    else:
-        raise TypeError(ERRORS['type']['string'].format('sum'))
+    return reql.sum(_expand_path(value))
 
 
+@type_check(six.string_types)
 def avg(reql, value):
     '''
         Adds an 'avg' aggregation to the query
@@ -412,14 +420,12 @@ def avg(reql, value):
         The reql query with the 'sum' aggregation appended to it
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a string
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a string
     '''
-    if isinstance(value, six.string_types):
-        return reql.avg(_expand_path(value))
-    else:
-        raise TypeError(ERRORS['type']['string'].format('avg'))
+    return reql.avg(_expand_path(value))
 
 
+@type_check(six.string_types)
 def min_(reql, value):
     '''
         Adds a 'min' aggregation to the query
@@ -433,14 +439,12 @@ def min_(reql, value):
         The reql query with the 'min' aggregation appended to it
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a string
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a string
     '''
-    if isinstance(value, six.string_types):
-        return reql.min(_expand_path(value))
-    else:
-        raise TypeError(ERRORS['type']['string'].format('min'))
+    return reql.min(_expand_path(value))
 
 
+@type_check(six.string_types)
 def max_(reql, value):
     '''
         Adds a 'max' aggregation to the query
@@ -454,12 +458,9 @@ def max_(reql, value):
         The reql query with the 'max' aggregation appended to it
 
         Exceptions:
-        Raises a 'reqon.exceptions.TypeError' if the value is not a string
+        Raises a 'reqon.exceptions.InvalidTypeError' if the value is not a string
     '''
-    if isinstance(value, six.string_types):
-        return reql.max(_expand_path(value))
-    else:
-        raise TypeError(ERRORS['type']['string'].format('max'))
+    return reql.max(_expand_path(value))
 
 
 TERMS = {

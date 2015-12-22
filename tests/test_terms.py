@@ -20,7 +20,7 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert expected == expanded
 
     def test_expand_path_invalid_type(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms._expand_path(1)
         assert terms.ERRORS['type']['string'].format('expand_path') == str(excinfo.value)
 
@@ -34,11 +34,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_get_invalid_type(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.get(self.reql, { "foo": "bar" })
         assert terms.ERRORS['type']['invalid'].format('get') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.get(self.reql, [1, 2, {"foo": "bar"}])
         assert terms.ERRORS['type']['invalid'].format('get') == str(excinfo.value)
 
@@ -116,11 +116,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_skip(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.skip(self.reql, "4")
         assert terms.ERRORS['type']['int'].format('skip') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.skip(self.reql, 1.4)
         assert terms.ERRORS['type']['int'].format('skip') == str(excinfo.value)
 
@@ -134,11 +134,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_limit(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.limit(self.reql, "10")
         assert terms.ERRORS['type']['int'].format('limit') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.limit(self.reql, 10.5)
         assert terms.ERRORS['type']['int'].format('limit') == str(excinfo.value)
 
@@ -151,17 +151,17 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_slice(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.slice_(self.reql, 10)
-        assert terms.ERRORS['type']['invalid'].format('slice') == str(excinfo.value)
+        assert terms.ERRORS['type']['invalid'].format('slice_') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.slice_(self.reql, [10.4, 10])
-        assert terms.ERRORS['type']['invalid'].format('slice') == str(excinfo.value)
+        assert terms.ERRORS['type']['invalid'].format('slice_') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.slice_(self.reql, ["10", 20])
-        assert terms.ERRORS['type']['invalid'].format('slice') == str(excinfo.value)
+        assert terms.ERRORS['type']['invalid'].format('slice_') == str(excinfo.value)
 
 
     # Nth
@@ -173,11 +173,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_nth(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.nth(self.reql, "10")
         assert terms.ERRORS['type']['int'].format('nth') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.nth(self.reql, 10.5)
         assert terms.ERRORS['type']['int'].format('nth') == str(excinfo.value)
 
@@ -190,11 +190,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_sample(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.sample(self.reql, "10")
         assert terms.ERRORS['type']['int'].format('sample') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.sample(self.reql, 10.5)
         assert terms.ERRORS['type']['int'].format('sample') == str(excinfo.value)
 
@@ -208,11 +208,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_pluck(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.pluck(self.reql, "10")
         assert terms.ERRORS['type']['invalid'].format('pluck') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.pluck(self.reql, ["10", 1])
         assert terms.ERRORS['type']['invalid'].format('pluck') == str(excinfo.value)
 
@@ -226,11 +226,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_without(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.without(self.reql, "10")
         assert terms.ERRORS['type']['invalid'].format('without') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.without(self.reql, ["10", 1])
         assert terms.ERRORS['type']['invalid'].format('without') == str(excinfo.value)
 
@@ -248,11 +248,11 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_group(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.group(self.reql, 1)
         assert terms.ERRORS['type']['invalid'].format('group') == str(excinfo.value)
 
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.group(self.reql, ["$index", 1])
         assert terms.ERRORS['type']['invalid'].format('group') == str(excinfo.value)
 
@@ -280,9 +280,9 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_sum(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.sum_(self.reql, 1)
-        assert terms.ERRORS['type']['string'].format('sum') == str(excinfo.value)
+        assert terms.ERRORS['type']['string'].format('sum_') == str(excinfo.value)
 
 
     # Avg
@@ -294,7 +294,7 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_avg(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.avg(self.reql, 1)
         assert terms.ERRORS['type']['string'].format('avg') == str(excinfo.value)
 
@@ -308,9 +308,9 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_min_(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.min_(self.reql, 1)
-        assert terms.ERRORS['type']['string'].format('min') == str(excinfo.value)
+        assert terms.ERRORS['type']['string'].format('min_') == str(excinfo.value)
 
 
     # Max
@@ -322,6 +322,6 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_invalid_max_(self):
-        with pytest.raises(reqon.exceptions.TypeError) as excinfo:
+        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
             terms.max_(self.reql, 1)
-        assert terms.ERRORS['type']['string'].format('max') == str(excinfo.value)
+        assert terms.ERRORS['type']['string'].format('max_') == str(excinfo.value)
