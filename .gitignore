@@ -59,3 +59,6 @@ target/
 # docs
 docs/build
 docs/node_modules
+
+# Editor based ignores
+*.swp
