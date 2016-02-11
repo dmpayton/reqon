@@ -42,7 +42,7 @@ def _expand_path(fields):
         Raises a "reqon.exceptions.InvalidTypeError" if the argument is not a String
     '''
 
-    try:
+    if isinstance(fields, six.string_types):
         fields = fields.split('.')
         num_fields = len(fields)
         if num_fields == 1:
@@ -55,8 +55,8 @@ def _expand_path(fields):
                 node[field] = {}
                 node = node[field]
         return row
-    except:
-        raise InvalidTypeError(ERRORS['type']['string'].format('expand_path'))
+    else:
+        return fields
 
 
 # Selecting data
