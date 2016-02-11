@@ -1,10 +1,12 @@
 import rethinkdb as r
 import six
+import dateutil.parser
 
 from .coerce import coerce
 from .operators import build
 from .exceptions import InvalidTypeError, InvalidFilterError
 from .utils import dict_in
+from calendar import datetime
 
 
 def type_check(*args):
@@ -462,11 +464,55 @@ def max_(reql, value):
     '''
     return reql.max(_expand_path(value))
 
+def between(reql, _from, _to, index = None):
+    '''
+        Adds a 'between' filter to the query
+        ['$between', ['2016-01-01', '2016-01-31', 'timestamp']]
+
+        Arguments:
+        reql -- The reql query to append to
+        _from -- The starting timestamp
+        _to -- The ending timestamp
+        index -- The index to use for the filter
+
+        Returns:
+        The reql query with the 'between' filter appended to it
+    '''
+    def parse_arg(value):
+        try:
+            return dateutil.parser.parse(value)
+        except ValueError:
+            return value
+
+    def get_time_zone(value):
+        try:
+            return value.isoformat().split('+')[1]
+        except:
+            return 'Z'
+
+    options = {}
+    lower = parse_arg(_from)
+    upper = parse_arg(_to)
+
+    if index:
+       options['index'] = index
+
+    if isinstance(lower, datetime.datetime) and isinstance(upper, datetime.datetime):
+        timezone = get_time_zone(lower)
+        return reql.between(
+            r.time(lower.year, lower.month, lower.day, timezone),
+            r.time(upper.year, upper.month, upper.day, timezone),
+            **options
+        )
+    else:
+        return reql.between(lower, upper, **options)
+
 
 TERMS = {
     '$get': get,
     '$get_all': get_all,
     '$filter': filter_,
+    '$between': between,
 
     '$has_fields': has_fields,
     '$with_fields': with_fields,
