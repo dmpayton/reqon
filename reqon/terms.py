@@ -500,8 +500,8 @@ def between(reql, _from, _to, index = None):
     if isinstance(lower, datetime.datetime) and isinstance(upper, datetime.datetime):
         timezone = get_time_zone(lower)
         return reql.between(
-            r.time(lower.year, lower.month, lower.day, timezone),
-            r.time(upper.year, upper.month, upper.day, timezone),
+            r.time(lower.year, lower.month, lower.day, lower.hour, lower.minute, lower.second, timezone),
+            r.time(upper.year, upper.month, upper.day, upper.hour, upper.minute, upper.second, timezone),
             **options
         )
     else:
