@@ -19,11 +19,10 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         expected = {'foo': { 'bar': { 'baz': True } } }
         assert expected == expanded
 
-    def test_expand_path_invalid_type(self):
-        with pytest.raises(reqon.exceptions.InvalidTypeError) as excinfo:
-            terms._expand_path(1)
-        assert terms.ERRORS['type']['string'].format('expand_path') == str(excinfo.value)
-
+    def test_expand_path_with_array(self):
+        expanded = terms._expand_path([1, 2, 3])
+        expected = [1, 2, 3]
+        assert expanded == expected
 
     # Get
 
