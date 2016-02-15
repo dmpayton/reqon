@@ -184,7 +184,9 @@ def order_by(reql, value):
     '''
         Adds an 'order_by' filter to the query
         ['$order_by', 'name']
+        ['$order_by', ['name', '$desc']]
         ['$order_by', ['$index', 'name']]
+        ['$order_by', ['$index', 'name', $asc']]
 
         Arguments:
         reql -- The reql query to append to
@@ -197,7 +199,16 @@ def order_by(reql, value):
         No custom exceptions are currently raised
     '''
     if isinstance(value, list) and value[0] == '$index':
-        return reql.order_by(index=value[1])
+        if len(value) == 2:
+            return reql.order_by(index=value[1])
+        elif len(value) == 3 and value[2] == '$asc':
+            return reql.order_by(index=r.asc(value[1]))
+        elif len(value) == 3 and value[2] == '$desc':
+            return reql.order_by(index=r.desc(value[1]))
+    elif isinstance(value, list) and value[1] == '$asc':
+        return reql.order_by(r.asc(value[0]))
+    elif isinstance(value, list) and value[1] == '$desc':
+        return reql.order_by(r.desc(value[0]))
     return reql.order_by(_expand_path(value))
 
 

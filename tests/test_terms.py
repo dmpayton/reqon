@@ -105,6 +105,26 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.order_by(index='title'))
         assert str(reql1) == str(reql2)
 
+    def test_order_by_ascending(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$order_by'](self.reql, ['rank', '$asc']))
+        reql2 = self.reqlify(lambda: self.reql.order_by(r.asc('rank')))
+        assert str(reql1) == str(reql2)
+
+    def test_order_by_descending(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$order_by'](self.reql, ['rank', '$desc']))
+        reql2 = self.reqlify(lambda: self.reql.order_by(r.desc('rank')))
+        assert str(reql1) == str(reql2)
+
+    def test_order_by_asc_indexed(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$order_by'](self.reql, ['$index', 'rank', '$asc']))
+        reql2 = self.reqlify(lambda: self.reql.order_by(index=r.asc('rank')))
+        assert str(reql1) == str(reql2)
+
+    def test_order_by_desc_indexed(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$order_by'](self.reql, ['$index', 'rank', '$desc']))
+        reql2 = self.reqlify(lambda: self.reql.order_by(index=r.desc('rank')))
+        assert str(reql1) == str(reql2)
+
 
     # Skip
 
