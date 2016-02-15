@@ -497,11 +497,15 @@ def between(reql, args):
         _from, _to, index = args
 
     options = {}
-    lower = parse_arg(_from)
-    upper = parse_arg(_to)
 
     if index:
        options['index'] = index
+
+    if isinstance(_from, int):
+        return reql.between(_from, _to, **options)
+
+    lower = parse_arg(_from)
+    upper = parse_arg(_to)
 
     if isinstance(lower, datetime.datetime) and isinstance(upper, datetime.datetime):
         timezone = get_time_zone(lower)
