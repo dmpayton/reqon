@@ -464,7 +464,7 @@ def max_(reql, value):
     '''
     return reql.max(_expand_path(value))
 
-def between(reql, _from, _to, index = None):
+def between(reql, args):
     '''
         Adds a 'between' filter to the query
         ['$between', ['2016-01-01', '2016-01-31', 'timestamp']]
@@ -489,6 +489,12 @@ def between(reql, _from, _to, index = None):
             return value.isoformat().split('+')[1]
         except:
             return 'Z'
+
+    if len(args) == 2:
+        _from, _to = args
+        index = None
+    else:
+        _from, _to, index = args
 
     options = {}
     lower = parse_arg(_from)
