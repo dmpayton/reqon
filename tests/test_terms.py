@@ -332,18 +332,18 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
     def test_between(self):
         _from = r.time(2016, 1, 1, 0, 0, 0,'Z')
         _to = r.time(2016, 1, 31, 0, 0, 0, 'Z')
-        reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, '2016-01-01', '2016-01-31', 'timestamp'))
+        reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, ['2016-01-01', '2016-01-31', 'timestamp']))
         reql2 = self.reqlify(lambda: self.reql.between(_from, _to, index = 'timestamp'))
         assert str(reql1) == str(reql2)
 
     def test_nil_index(self):
         _from = r.time(2016, 1, 1, 0, 0, 0, 'Z')
         _to = r.time(2016, 1, 31, 0, 0, 0, 'Z')
-        reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, '2016-01-01', '2016-01-31'))
+        reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, ['2016-01-01', '2016-01-31']))
         reql2 = self.reqlify(lambda: self.reql.between(_from, _to))
         assert str(reql1) == str(reql2)
 
     def test_between_without_strings(self):
-        reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, 'ab', 'ef'))
+        reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, ['ab', 'ef']))
         reql2 = self.reqlify(lambda: self.reql.between('ab', 'ef'))
         assert str(reql1) == str(reql2)
