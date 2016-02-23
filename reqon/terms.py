@@ -130,9 +130,8 @@ def filter_(reql, value):
     '''
     if value:
         try:
-            return reql.filter(
-                r.and_(*map(build, value))
-            )
+            for item in value:
+                reql = reql.filter(build(item))
         except:
             raise InvalidFilterError(ERRORS['filter']['invalid'].format(value))
 

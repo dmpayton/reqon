@@ -64,7 +64,7 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
             ['rank', ['$gt', 8]],
             ['age', ['$lt', 6]]
         ]))
-        reql2 = self.reqlify(lambda: self.reql.filter(r.and_(r.row['rank'].gt(8), r.row['age'].lt(6))))
+        reql2 = self.reqlify(lambda: self.reql.filter(r.row['rank'].gt(8)).filter(r.row['age'].lt(6)))
         assert str(reql1) == str(reql2)
 
 
