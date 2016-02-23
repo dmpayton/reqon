@@ -30,8 +30,8 @@ class OperatorsTests(ReQONTestMixin, unittest.TestCase):
 
 
     def test_in_(self):
-        response = operators.in_("score", [1, 2, 3])
-        assert str(response) == "r.expr([1, 2, 3]).contains('score')"
+        response = operators.in_(r.row["score"], [1, 2, 3])(r.row)
+        assert str(response) == "r.expr([1, 2, 3]).contains(lambda var_1: r.row['score'])"
 
 
     # Regex

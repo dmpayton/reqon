@@ -45,7 +45,8 @@ def in_(row, value):
     '''
         ['score', ['$in', [1, 2, 3, 4]]
     '''
-    return r.expr(value).contains(row)
+    attr = row.args[1].data  # extract the original attr name from the row.
+    return lambda doc: r.expr(value).contains(doc[attr])
 
 
 def regex(row, value):

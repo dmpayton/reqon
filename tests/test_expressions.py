@@ -17,8 +17,8 @@ class FilterFunctionTests(ReQONTestMixin, unittest.TestCase):
         assert str(reql1) == str(reql2)
 
     def test_in(self):
-        reql1 = self.reqlify(lambda: reqon.EXPRESSIONS['$in'](r.row['rank'], [1, 2, 3]))
-        reql2 = self.reqlify(lambda: r.expr([1, 2, 3]).contains(r.row['rank']))
+        reql1 = self.reqlify(lambda: reqon.EXPRESSIONS['$in'](r.row['rank'], [1, 2, 3]))(r.row)
+        reql2 = self.reqlify(lambda: (lambda doc: r.expr([1, 2, 3]).contains(doc['rank']))(r.row))
         assert str(reql1) == str(reql2)
 
     def test_regex(self):
