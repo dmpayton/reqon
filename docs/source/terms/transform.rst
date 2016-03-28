@@ -27,6 +27,10 @@ See also: http://rethinkdb.com/api/python/with_fields/
 $order_by
 =========
 
+.. autofunction:: reqon.terms.order_by
+
+See also: http://rethinkdb.com/api/python/order_by/
+
 
 .. _$skip:
 
