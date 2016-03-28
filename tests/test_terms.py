@@ -343,7 +343,12 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.between(_from, _to))
         assert str(reql1) == str(reql2)
 
-    def test_between_without_strings(self):
+    def test_between_with_strings(self):
         reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, ['ab', 'ef']))
         reql2 = self.reqlify(lambda: self.reql.between('ab', 'ef'))
+        assert str(reql1) == str(reql2)
+
+    def test_between_with_int(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, [1, 2, "foo"]))
+        reql2 = self.reqlify(lambda: self.reql.between(1, 2, index="foo"))
         assert str(reql1) == str(reql2)
