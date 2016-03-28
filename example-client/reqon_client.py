@@ -46,9 +46,6 @@ class row(object):
     def __ge__(self, other):
         return [self.field, ['$ge', self._coerce(other)]]
 
-    def __contains__(self, item):
-        return [self.field, ['$contains', self._coerce(item)]]
-
     def __getattr__(self, attr):
         if attr in self.operators:
             return self._operator(attr)
