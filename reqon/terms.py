@@ -1,3 +1,4 @@
+import functools
 import rethinkdb as r
 import six
 import dateutil.parser
@@ -13,6 +14,7 @@ def type_check(*args):
     outer_args = args
 
     def checker(func):
+        @functools.wraps(func)
         def wrapper(*args):
             if outer_args[0] == six.string_types:
                 if not isinstance(args[1], six.string_types):
@@ -27,7 +29,9 @@ def type_check(*args):
                     raise InvalidTypeError(ERRORS['type'][outer_args[0].__name__].format(func.__name__))
             return func(*args)
         return wrapper
+
     return checker
+
 
 def _expand_path(fields):
     '''
