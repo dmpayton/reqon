@@ -1,3 +1,4 @@
+import geojson
 import reqon
 import rethinkdb as r
 import unittest
@@ -371,4 +372,19 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
     def test_between_with_int(self):
         reql1 = self.reqlify(lambda: reqon.TERMS['$between'](self.reql, [1, 2, "foo"]))
         reql2 = self.reqlify(lambda: self.reql.between(1, 2, index="foo"))
+        assert str(reql1) == str(reql2)
+
+
+    # Geo
+
+    def test_get_intersecting(self):
+        point = geojson.utils.generate_random('Point')
+        reql1 = self.reqlify(lambda: reqon.TERMS['$get_intersecting'](self.reql, ['location', point]))
+        reql2 = self.reqlify(lambda: self.reql.get_intersecting(r.point(*point['coordinates']), index='location'))
+        assert str(reql1) == str(reql2)
+
+    def test_get_intersecting(self):
+        point = geojson.utils.generate_random('Point')
+        reql1 = self.reqlify(lambda: reqon.TERMS['$get_nearest'](self.reql, ['location', point]))
+        reql2 = self.reqlify(lambda: self.reql.get_nearest(r.point(*point['coordinates']), index='location'))
         assert str(reql1) == str(reql2)

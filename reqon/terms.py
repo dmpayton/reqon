@@ -532,6 +532,18 @@ def between(reql, args):
         return reql.between(lower, upper, **options)
 
 
+def get_intersecting(reql, value):
+    index, value = value
+    value = geojson_to_reql(value)
+    return reql.get_intersecting(value, index=index)
+
+
+def get_nearest(reql, value):
+    index, value = value
+    value = geojson_to_reql(value)
+    return reql.get_nearest(value, index=index)
+
+
 TERMS = {
     '$get': get,
     '$get_all': get_all,
@@ -556,6 +568,9 @@ TERMS = {
     '$avg': avg,
     '$min': min_,
     '$max': max_,
+
+    '$get_intersecting': get_intersecting,
+    '$get_nearest': get_nearest,
 }
 
 ERRORS = {
