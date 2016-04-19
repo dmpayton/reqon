@@ -4,8 +4,9 @@ import six
 import dateutil.parser
 
 from .coerce import coerce
-from .operators import build
 from .exceptions import InvalidTypeError, InvalidFilterError
+from .geo import geojson_to_reql
+from .operators import build
 from .utils import dict_in
 from calendar import datetime
 
