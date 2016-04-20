@@ -45,7 +45,12 @@ def in_(row, value):
     '''
         ['score', ['$in', [1, 2, 3, 4]]
     '''
-    attr = row.args[1].data  # extract the original attr name from the row.
+    # extract the original attr name from the row.
+    try:
+        attr = row.args[1].data
+    except AttributeError:
+        # renamed to `row._args` in rethinkdb 2.3.0
+        attr = row._args[1].data
     return lambda doc: r.expr(value).contains(doc[attr])
 
 
