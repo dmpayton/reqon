@@ -4,11 +4,6 @@ python:
   - "2.7"
   - "3.5"
 
-env:
-  - TOXENV=py27
-  - TOXENV=py34
-  - TOXENV=coverage
-
 install:
   - pip install tox tox-travis codecov
 
