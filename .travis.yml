@@ -1,7 +1,10 @@
 language: python
 
 install:
-  - pip install tox codecov
+  - pip install tox tox-pyenv codecov
+
+before_script:
+  - pyenv local 2.7.10 3.5.0
 
 script: tox
 
