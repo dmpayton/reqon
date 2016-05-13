@@ -15,7 +15,7 @@ def query(query):
     except KeyError:
         reql = r.table(query['$table'])
 
-    for sequence in query['$query']:
+    for sequence in query.get('$query', []):
         try:
             term, kwargs = sequence
         except ValueError:

@@ -4,7 +4,7 @@ from .exceptions import ValidationError
 from .terms import TERMS
 
 
-query_schema = jsonschema.Draft4Validator({
+schema = jsonschema.Draft4Validator({
     'type': 'object',
     'properties': {
         '$db': {'type': 'string'},
@@ -39,18 +39,13 @@ query_schema = jsonschema.Draft4Validator({
             }
         }
     },
-    'required': ['$table', '$query']
+    'required': ['$table']
 })
 
 
-def schema_validator(schema):
-    def validator(value):
-        try:
-            schema.validate(value)
-        except jsonschema.ValidationError as err:
-            raise ValidationError(err.message)
-        return value
-    return validator
-
-
-validate = schema_validator(query_schema)
+def validate(query):
+    try:
+        schema.validate(query)
+    except jsonschema.ValidationError as err:
+        raise ValidationError(err.message)
+    return query
