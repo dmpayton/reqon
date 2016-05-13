@@ -5,11 +5,11 @@ import dateutil.parser
 
 from calendar import datetime
 
+from . import utils
 from .coerce import coerce
 from .exceptions import ReqonError, FilterError
 from .geo import geojson_to_reql
 from .operators import build
-from .utils import expand_path
 
 
 # Selecting data
@@ -42,13 +42,11 @@ def between(reql, lower_key, upper_key, **kwargs):
 
 
 def has_fields(reql, fields):
-    fields = [expand_path(field) for field in fields]
-    return reql.has_fields(*fields)
+    return reql.has_fields(*utils.expand_paths(fields))
 
 
 def with_fields(reql, fields):
-    fields = [expand_path(field) for field in fields]
-    return reql.with_fields(*fields)
+    return reql.with_fields(*utils.expand_paths(fields))
 
 
 def order_by(reql, key=None, index=None, ordering=None):
@@ -68,7 +66,7 @@ def order_by(reql, key=None, index=None, ordering=None):
 
     if index:
         return reql.order_by(index=ordering(index))
-    return reql.order_by(ordering(expand_path(key)))
+    return reql.order_by(ordering(utils.expand_path(key)))
 
 
 def skip(reql, n):
@@ -95,13 +93,11 @@ def sample(reql, n):
 
 
 def pluck(reql, fields):
-    fields = [expand_path(field) for field in fields]
-    return reql.pluck(*fields)
+    return reql.pluck(*utils.expand_paths(fields))
 
 
 def without(reql, fields):
-    fields = [expand_path(field) for field in fields]
-    return reql.without(*fields)
+    return reql.without(*utils.expand_paths(fields))
 
 
 # Aggregation
@@ -115,7 +111,7 @@ def group(reql, field=None, index=None, multi=False):
 
     if index:
         return reql.group(index=index, multi=multi)
-    return reql.group(expand_path(field), multi=multi)
+    return reql.group(utils.expand_path(field), multi=multi)
 
 
 def count(reql):
@@ -123,19 +119,19 @@ def count(reql):
 
 
 def sum(reql, field):
-    return reql.sum(expand_path(field))
+    return reql.sum(utils.expand_path(field))
 
 
 def avg(reql, field):
-    return reql.avg(expand_path(field))
+    return reql.avg(utils.expand_path(field))
 
 
 def min(reql, field):
-    return reql.min(expand_path(field))
+    return reql.min(utils.expand_path(field))
 
 
 def max(reql, field):
-    return reql.max(expand_path(field))
+    return reql.max(utils.expand_path(field))
 
 
 # Geospatial

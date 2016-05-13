@@ -18,3 +18,7 @@ def expand_path(path):
                 node = node[field]
         return row
     return path
+
+
+def expand_paths(paths):
+    return [expand_path(path) for path in paths]
