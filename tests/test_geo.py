@@ -50,5 +50,5 @@ class GeoJSONToReQLTests(ReQONTestMixin, unittest.TestCase):
     def test_geojson_to_reql_invalid(self):
         point = geojson.utils.generate_random('Point')
         point['coordinates'] = [point['coordinates']]
-        with pytest.raises(ValueError):
+        with pytest.raises(reqon.exceptions.ValidationError):
             reqon.geo.geojson_to_reql(point)

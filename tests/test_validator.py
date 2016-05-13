@@ -5,21 +5,21 @@ import unittest
 from .utils import ReQONTestMixin
 
 
-class ValidatorTests(ReQONTestMixin, unittest.TestCase):
+class QueryValidatorTests(ReQONTestMixin, unittest.TestCase):
     def test_empty_query(self):
         query = {
             '$db': 'test',
             '$table': 'movies',
             '$query': []
         }
-        reqon.validate(query)
+        reqon.validate_query(query)
 
     def test_no_db(self):
         query = {
             '$table': 'movies',
             '$query': []
         }
-        reqon.validate(query)
+        reqon.validate_query(query)
 
     def test_missing_table(self):
         query = {
@@ -27,7 +27,7 @@ class ValidatorTests(ReQONTestMixin, unittest.TestCase):
             '$query': []
         }
         with pytest.raises(reqon.exceptions.ValidationError):
-            reqon.validate(query)
+            reqon.validate_query(query)
 
     def test_term_args(self):
         query = {
@@ -37,7 +37,7 @@ class ValidatorTests(ReQONTestMixin, unittest.TestCase):
                 ['$pluck', {'fields': ['name', 'year', 'rating']}]
             ]
         }
-        reqon.validate(query)
+        reqon.validate_query(query)
 
     def test_term_noargs(self):
         query = {
@@ -47,7 +47,7 @@ class ValidatorTests(ReQONTestMixin, unittest.TestCase):
                 ['$count']
             ]
         }
-        reqon.validate(query)
+        reqon.validate_query(query)
 
     def test_invalid_query(self):
         query = {
@@ -56,7 +56,7 @@ class ValidatorTests(ReQONTestMixin, unittest.TestCase):
             '$query': 'lol nope'
         }
         with pytest.raises(reqon.exceptions.ValidationError):
-            reqon.validate(query)
+            reqon.validate_query(query)
 
     def test_invalid_term(self):
         query = {
@@ -67,4 +67,4 @@ class ValidatorTests(ReQONTestMixin, unittest.TestCase):
             ]
         }
         with pytest.raises(reqon.exceptions.ValidationError):
-            reqon.validate(query)
+            reqon.validate_query(query)

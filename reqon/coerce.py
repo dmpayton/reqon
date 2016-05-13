@@ -49,15 +49,9 @@ def coerce_time(value):
     return coerce_datetime(value).time()
 
 
-def coerce_geojson(value):
-    if isinstance(value, six.string_types):
-        value = json.loads(value)
-    return geojson_to_reql(value)
-
-
 COERSIONS = {
     '$date': coerce_date,
     '$time': coerce_time,
     '$datetime': coerce_datetime,
-    '$geojson': coerce_geojson,
+    '$geojson': geojson_to_reql,
 }

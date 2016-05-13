@@ -4,11 +4,11 @@ from . import coerce, exceptions, geo, operators, terms
 from .coerce import COERSIONS
 from .operators import BOOLEAN, EXPRESSIONS, MODIFIERS
 from .terms import TERMS
-from .validator import validate
+from .validators import validate_query
 
 
 def query(query):
-    validate(query)
+    query = validate_query(query)
 
     try:
         reql = r.db(query['$db']).table(query['$table'])
