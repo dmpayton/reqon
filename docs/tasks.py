@@ -17,8 +17,8 @@ def build():
 
 @invoke.task(pre=[build])
 def serve():
-    server.watch('./source/*', build)
-    server.watch('./source/**/*', build)
+    server.watch('../reqon/', build)
+    server.watch('./source/', build)
     server.serve(
         root='./build',
         host='localhost',
