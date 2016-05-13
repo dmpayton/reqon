@@ -16,10 +16,10 @@ def OR(*args):
 
 
 def NOT(*args):
-    return ['$or', [args]]
+    return ['$not', [args]]
 
 
-class row(object):
+class Field(object):
     modifiers = ('date', 'time', 'year', 'month', 'day', 'hours', 'minutes',
         'seconds', 'day_of_month', 'day_of_year', 'timezone')
     operators = ('ieq', 'in', 'regex', 'starts', 'istarts', 'ends', 'iends',
@@ -94,63 +94,72 @@ class Query(object):
     def as_json(self):
         return json.dumps(self.as_reqon())
 
-    def append_term(self, term, value=NoValue):
-        if value == NoValue:
-            self.query.append([term])
+    def append_term(self, term, **kwargs):
+        if kwargs:
+            self.query.append([term, kwargs])
         else:
             self.query.append([term, value])
 
+    # Selecting data
+
     def get(self, pk):
-        self.append_term('$get', pk)
+        self.append_term('$get', key=pk)
         return self._clone()
 
-    def get_all(self, *pks):
-        self.append_term('$get_all', pks)
+    def get_all(self, keys, **kwargs):
+        self.append_term('$get_all', keys=keys, **kwargs)
         return self._clone()
 
     def filter(self, *filters):
         self.append_term('$filter', filters)
         return self._clone()
 
+    # Transformations
+
     def has_fields(self, *fields):
-        self.append_term('$has_fields', fields)
+        self.append_term('$has_fields', fields=fields)
         return self._clone()
 
     def with_fields(self, *fields):
-        self.append_term('$with_fields', fields)
+        self.append_term('$with_fields', fields=fields)
         return self._clone()
 
     def order_by(self, field):
         self.append_term('$order_by', field)
         return self._clone()
 
-    def skip(self, num):
-        self.append_term('$skip', num)
+    def skip(self, n):
+        self.append_term('$skip', n=n)
         return self._clone()
 
-    def limit(self, num):
-        self.append_term('$limit', num)
+    def limit(self, n):
+        self.append_term('$limit', n=n)
         return self._clone()
 
-    def slice(self, start, end):
-        self.append_term('$slice', [start, end])
+    def slice(self, start_offset, end_offset, **kwargs):
+        self.append_term('$slice', start_offset=start_offset,
+            end_offset=end_offset, **kwargs)
         return self._clone()
 
-    def nth(self, num):
-        self.append_term('$nth', num)
+    def nth(self, n):
+        self.append_term('$nth', n=n)
         return self._clone()
 
-    def sample(self, num):
-        self.append_term('$sample', num)
+    def sample(self, n):
+        self.append_term('$sample', n=n)
         return self._clone()
+
+    # Manipulation
 
     def pluck(self, *fields):
-        self.append_term('$pluck', fields)
+        self.append_term('$pluck', fields=fields)
         return self._clone()
 
     def without(self, *fields):
-        self.append_term('$without', fields)
+        self.append_term('$without', fields=fields)
         return self._clone()
+
+    # Aggregation
 
     def group(self):
         return self._clone()
@@ -159,18 +168,28 @@ class Query(object):
         self.append_term('$count')
         return self._clone()
 
-    def sum(self):
-        self.append_term('$sum')
+    def sum(self, field):
+        self.append_term('$sum', field=field)
         return self._clone()
 
-    def avg(self):
-        self.append_term('$avg')
+    def avg(self, field):
+        self.append_term('$avg', field=field)
         return self._clone()
 
-    def min(self):
-        self.append_term('$min')
+    def min(self, field):
+        self.append_term('$min', field=field)
         return self._clone()
 
-    def max(self):
-        self.append_term('$max')
+    def max(self, field):
+        self.append_term('$max', field=field)
+        return self._clone()
+
+    # Geospatial
+
+    def get_intersecting(self, geometry, index):
+        self.append_term('$get_intersecting', geometry=geometry, index=index)
+        return self._clone()
+
+    def get_nearest(self, geometry, index):
+        self.append_term('$get_nearest', geometry=geometry, index=index)
         return self._clone()

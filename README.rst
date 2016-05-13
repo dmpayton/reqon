@@ -14,8 +14,8 @@ ReQL Query Object Notation
     :target: https://codecov.io/github/dmpayton/reqon?branch=develop
     :alt: codecov.io
 
-ReQON ([ɹiːˈkʰɑn], /riːˈkɑn/, RE-kon) lets you build simple, read-only `RethinkDB <http://rethinkdb.com/>`_
-queries from JSON.
+ReQON ([ɹiːˈkʰɑn], /riːˈkɑn/, RE-kon) lets you build simple, read-only
+`RethinkDB <http://rethinkdb.com/>`_ queries from JSON.
 
 I love RethinkDB, and ReQL is awesome and powerful, but sometimes you need to
 expose RethinkDB's querying capabilities through an HTTP API endpoint. ReQON
@@ -28,15 +28,15 @@ ReQON transforms this:
     {
         '$table': 'movies',
         '$query': [
-            ['$filter', [
+            ['$filter', {'predicate': [
                 ['rating', ['$gt', 8]],
                 ['$or', [
                     ['year', ['$lt', 1990]],
                     ['year', ['$gt', 1999]]
                 ]]
-            ]],
-            ['$order_by', ['$asc', 'rank'],
-            ['$sample', 5]
+            ]}],
+            ['$order_by', {'index': 'rank', 'ordering': 'asc'}],
+            ['$sample', {'n': 5}]
         ]
     }
 
@@ -65,9 +65,16 @@ ReQON makes it easy to query RethinkDB through a web API:
 
     class QueryEndpoint(View):
         def post(self, request):
+            # Open a RethinkDB connection
             conn = r.connect()
+
+            # Build the query from the POST body
             query = json.loads(request.body)
             reql = reqon.query(query)
+
+            # Get the results and close the connection
             results = reql.run(conn)
+            if isinstance(results, r.Cursor):
+                results = list(results)
             conn.close()
-            return json.dumps({'data': results})
+            return HttpResponse(json.dumps({'data': results}))

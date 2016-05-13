@@ -1,5 +1,6 @@
 dateutils
 geojson
+jsonschema
 pytest
 pytest-cov
 pytest-pep8

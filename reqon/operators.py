@@ -103,8 +103,8 @@ def includes(row, value):
             'coordinates': [-135.4078334251454, -38.32676733670448]
         }]]
     '''
-    shape = geojson_to_reql(value)
-    return row.includes(shape)
+    geometry = geojson_to_reql(value)
+    return row.includes(geometry)
 
 
 def intersects(row, value):
@@ -114,8 +114,8 @@ def intersects(row, value):
             'coordinates': [[[-116, 28], [13, -26], [59, 58], [-116, 28]]]
         }]]
     '''
-    shape = geojson_to_reql(value)
-    return row.intersects(shape)
+    geometry = geojson_to_reql(value)
+    return row.intersects(geometry)
 
 
 BOOLEAN = {

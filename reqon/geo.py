@@ -3,7 +3,13 @@ import rethinkdb as r
 
 
 class Circle(geojson.geometry.Geometry):
-    def __init__(self, coordinates, radius=0, **kwargs):
+    def __init__(self, coordinates, radius, **kwargs):
+        kwargs = {key: kwargs[key] for key in (
+            'num_vertices',
+            'geo_system',
+            'unit',
+            'fill',
+        ) if key in kwargs}
         super(Circle, self).__init__(coordinates, radius=radius, **kwargs)
 
 
@@ -11,7 +17,7 @@ GEO_TYPES = {
     'Point': (geojson.Point, lambda geo: r.point(*geo['coordinates'])),
     'LineString': (geojson.LineString, lambda geo: r.line(*geo['coordinates'])),
     'Polygon': (geojson.Polygon, lambda geo: r.polygon(*geo['coordinates'][0])),
-    'Circle': (Circle, lambda geo: r.circle(geo['coordinates'], radius=geo['radius'])),
+    'Circle': (Circle, lambda geo: r.circle(geo.pop('coordinates'), **geo)),
 }
 
 

@@ -35,7 +35,7 @@ class GeoJSONToReQLTests(ReQONTestMixin, unittest.TestCase):
 
     def test_circle_invalid_coordinates(self):
         coords = geojson.utils.generate_random('Point')['coordinates']
-        circle = reqon.geo.Circle(coordinates=[coords])
+        circle = reqon.geo.Circle(coordinates=[coords], radius=0)
         output = reqon.geo.is_valid(circle)
         assert output['valid'] == 'no'
         assert '"coordinates"' in output['message']

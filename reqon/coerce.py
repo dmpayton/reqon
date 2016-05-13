@@ -1,7 +1,9 @@
 import datetime
-import dateutil.parser
 import json
+
+import dateutil.parser
 import pytz
+import rethinkdb as r
 import six
 
 from .geo import geojson_to_reql
@@ -14,6 +16,10 @@ def coerce(value):
         if len(value) == 2 and value[0] in COERSIONS:
             return COERSIONS[value[0]](value[1])
         return [coerce(item) for item in value]
+    if value == '$minval':
+        return r.minval
+    if value == '$maxval':
+        return r.maxval
     return value
 
 
