@@ -3,22 +3,6 @@ import datetime
 import json
 
 
-class NoValue(object):
-    pass
-
-
-def AND(*args):
-    return ['$and', [args]]
-
-
-def OR(*args):
-    return ['$or', [args]]
-
-
-def NOT(*args):
-    return ['$not', [args]]
-
-
 class Field(object):
     modifiers = ('date', 'time', 'year', 'month', 'day', 'hours', 'minutes',
         'seconds', 'day_of_month', 'day_of_year', 'timezone')
@@ -51,11 +35,11 @@ class Field(object):
             return self._operator(attr)
         if attr in self.modifiers:
             return self._modifier(attr)
-        raise AttributeError("'row' object has no attribute '{0}'".format(attr))
+        raise AttributeError("'Field' object has no attribute '{0}'".format(attr))
 
     def _modifier(self, modifier):
         def inner():
-            return row('{0}.${1}'.format(self.field, modifier))
+            return Field('{0}.${1}'.format(self.field, modifier))
         return inner
 
     def _operator(self, operator):
@@ -74,14 +58,26 @@ class Field(object):
 
 
 class Query(object):
-    def __init__(self, db=None, table=None, query=None):
+    def __init__(self, db=None, table=None):
         self.db = db
         self.table = table
-        self.query = query or []
+        self.query = []
+
+    @classmethod
+    def AND(cls, *args):
+        return ['$and', [args]]
+
+    @classmethod
+    def OR(cls, *args):
+        return ['$or', [args]]
+
+    @classmethod
+    def NOT(cls, *args):
+        return ['$not', [args]]
 
     def _clone(self):
-        query = Query(db=self.db, table=self.table,
-            query=copy.deepcopy(self.query))
+        query = Query(db=self.db, table=self.table)
+        query.query.extend(copy.deepcopy(self.query))
         return query
 
     def as_reqon(self):
@@ -111,7 +107,7 @@ class Query(object):
         return self._clone()
 
     def filter(self, *filters):
-        self.append_term('$filter', filters)
+        self.append_term('$filter', predicate=filters)
         return self._clone()
 
     # Transformations
@@ -124,8 +120,8 @@ class Query(object):
         self.append_term('$with_fields', fields=fields)
         return self._clone()
 
-    def order_by(self, field):
-        self.append_term('$order_by', field)
+    def order_by(self, **kwargs):
+        self.append_term('$order_by', **kwargs)
         return self._clone()
 
     def skip(self, n):
@@ -161,7 +157,8 @@ class Query(object):
 
     # Aggregation
 
-    def group(self):
+    def group(self, **kwargs):
+        self.append_term('$group', **kwargs)
         return self._clone()
 
     def count(self):
@@ -190,6 +187,6 @@ class Query(object):
         self.append_term('$get_intersecting', geometry=geometry, index=index)
         return self._clone()
 
-    def get_nearest(self, geometry, index):
-        self.append_term('$get_nearest', geometry=geometry, index=index)
+    def get_nearest(self, geometry, index, **kwargs):
+        self.append_term('$get_nearest', geometry=geometry, index=index, **kwargs)
         return self._clone()
