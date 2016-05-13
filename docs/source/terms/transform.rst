@@ -7,7 +7,7 @@ Transformations
 $has_fields
 ===========
 
-.. autofunction:: reqon.terms.has_fields
+.. py:function:: has_fields(fields)
 
 See also: http://rethinkdb.com/api/python/has_fields/
 
@@ -17,7 +17,7 @@ See also: http://rethinkdb.com/api/python/has_fields/
 $with_fields
 ============
 
-.. autofunction:: reqon.terms.with_fields
+.. py:function:: with_fields(fields)
 
 See also: http://rethinkdb.com/api/python/with_fields/
 
@@ -27,7 +27,7 @@ See also: http://rethinkdb.com/api/python/with_fields/
 $order_by
 =========
 
-.. autofunction:: reqon.terms.order_by
+.. py:function:: order_by(key | index[, ordering])
 
 See also: http://rethinkdb.com/api/python/order_by/
 
@@ -37,7 +37,7 @@ See also: http://rethinkdb.com/api/python/order_by/
 $skip
 =====
 
-.. autofunction:: reqon.terms.skip
+.. py:function:: skip(n)
 
 See also: http://rethinkdb.com/api/python/skip/
 
@@ -47,7 +47,7 @@ See also: http://rethinkdb.com/api/python/skip/
 $limit
 ======
 
-.. autofunction:: reqon.terms.limit
+.. py:function:: limit(n)
 
 See also: http://rethinkdb.com/api/python/limit/
 
@@ -57,7 +57,7 @@ See also: http://rethinkdb.com/api/python/limit/
 $slice
 ======
 
-.. autofunction:: reqon.terms.slice_
+.. py:function:: slice(start_offset, [end_offset, left_bound, right_bound])
 
 See also: http://rethinkdb.com/api/python/slice/
 
@@ -67,7 +67,7 @@ See also: http://rethinkdb.com/api/python/slice/
 $nth
 ====
 
-.. autofunction:: reqon.terms.nth
+.. py:function:: nth(n)
 
 See also: http://rethinkdb.com/api/python/nth/
 
@@ -77,6 +77,6 @@ See also: http://rethinkdb.com/api/python/nth/
 $sample
 =======
 
-.. autofunction:: reqon.terms.sample
+.. py:function:: sample(n)
 
 See also: http://rethinkdb.com/api/python/sample/

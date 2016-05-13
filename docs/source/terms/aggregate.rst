@@ -7,7 +7,7 @@ Aggregation
 $group
 ======
 
-.. autofunction:: reqon.terms.group
+.. py:function:: group(field | index[, multi])
 
 See also: http://rethinkdb.com/api/python/group/
 
@@ -17,7 +17,7 @@ See also: http://rethinkdb.com/api/python/group/
 $count
 ======
 
-.. autofunction:: reqon.terms.count
+.. py:function:: count()
 
 See also: http://rethinkdb.com/api/python/count/
 
@@ -26,7 +26,7 @@ See also: http://rethinkdb.com/api/python/count/
 $sum
 ====
 
-.. autofunction:: reqon.terms.sum_
+.. py:function:: sum(field)
 
 See also: http://rethinkdb.com/api/python/sum/
 
@@ -36,7 +36,7 @@ See also: http://rethinkdb.com/api/python/sum/
 $avg
 ====
 
-.. autofunction:: reqon.terms.avg
+.. py:function:: avg(field)
 
 See also: http://rethinkdb.com/api/python/avg/
 
@@ -46,7 +46,7 @@ See also: http://rethinkdb.com/api/python/avg/
 $min
 ====
 
-.. autofunction:: reqon.terms.min_
+.. py:function:: min(field)
 
 See also: http://rethinkdb.com/api/python/min/
 
@@ -56,6 +56,6 @@ See also: http://rethinkdb.com/api/python/min/
 $max
 ====
 
-.. autofunction:: reqon.terms.max_
+.. py:function:: max(field)
 
 See also: http://rethinkdb.com/api/python/max/

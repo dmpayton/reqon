@@ -8,17 +8,16 @@ Selecting data
 $get
 ====
 
-.. autofunction:: reqon.terms.get
+.. py:function:: get(key)
 
 See also: http://rethinkdb.com/api/python/get/
-
 
 .. _$get_all:
 
 $get_all
 ========
 
-.. autofunction:: reqon.terms.get_all
+.. py:function:: get_all(keys[, index])
 
 See also: http://rethinkdb.com/api/python/get_all/
 
@@ -28,36 +27,22 @@ See also: http://rethinkdb.com/api/python/get_all/
 $filter
 =======
 
-.. autofunction:: reqon.terms.filter_
+.. py:function:: filter(predicate)
+
+==================  ============  ============================================
+Boolean operator    ReQL          See also:
+==================  ============  ============================================
+``$and``            ``r.and_``    http://rethinkdb.com/api/python/and/
+``$or``             ``r.or_``     http://rethinkdb.com/api/python/or/
+``$not``            ``r.not_``    http://rethinkdb.com/api/python/not/
+==================  ============  ============================================
 
 See also: http://rethinkdb.com/api/python/filter/
 
 
-.. _$and:
+.. _$between:
 
-$and
-----
+$between
+========
 
-See also: http://rethinkdb.com/api/python/and/
-
-
-.. _$or:
-
-$or
----
-
-See also: http://rethinkdb.com/api/python/or/
-
-
-.. _$not:
-
-$not
-----
-
-See also: http://rethinkdb.com/api/python/not/
-
-
-.. _nesting-operators:
-
-Nesting operators
------------------
+.. py:function:: between(lower_key, upper_key[, index, left_bound, right_bound])

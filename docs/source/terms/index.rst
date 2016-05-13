@@ -10,6 +10,7 @@ Terms
     transform
     manipulate
     aggregate
+    geospatial
 
 .. rubric:: Selecting data
 
@@ -59,4 +60,14 @@ Term                       Description
 :ref:`$avg`                Average the specified field of the sequence
 :ref:`$min`                Find the minimum value of the specified field in the sequence
 :ref:`$max`                Find the maximum value of the specified field of the sequence
+=========================  ============================
+
+
+.. rubric:: Geospatial
+
+=========================  ============================
+Term                       Description
+=========================  ============================
+:ref:`$get_intersecting`   Get all documents where the given geometry object intersects with a geometry object of a geospatial index
+:ref:`$get_nearest`        Return the documents closest to the specified point based on a geospatial index
 =========================  ============================
