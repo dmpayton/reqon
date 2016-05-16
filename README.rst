@@ -70,7 +70,7 @@ ReQON makes it easy to query RethinkDB through a web API:
 
             # Build the query from the POST body
             query = json.loads(request.body)
-            reql = reqon.query(query)
+            reql = reqon.build_reql(query)
 
             # Get the results and close the connection
             results = reql.run(conn)

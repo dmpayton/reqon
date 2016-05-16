@@ -7,7 +7,7 @@ from .terms import TERMS
 from .validators import validate_query
 
 
-def query(query):
+def build_reql(query):
     query = validate_query(query)
 
     try:
@@ -19,6 +19,7 @@ def query(query):
         try:
             term, kwargs = sequence
         except ValueError:
+            # Not all terms take kwargs, so use an empty dict
             term, kwargs = sequence[0], {}
 
         try:
@@ -27,10 +28,10 @@ def query(query):
             # Re-raise, but prepend with the term
             raise ReqonError('{0}: {1}'.join(term, ''.join(err.args)))
         except r.ReqlError:
-            message = 'Invalid values for {0} with params {1}'
+            message = 'Invalid values: {0}({1})'
             raise ReqonError(message.format(term, kwargs))
         except Exception:
-            message = 'Unknown error: {0}: {1}'
+            message = 'Unknown error: {0}({1})'
             raise ReqonError(message.format(term, kwargs))
 
     return reql
