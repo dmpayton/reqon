@@ -36,16 +36,14 @@ class GeoJSONToReQLTests(ReQONTestMixin, unittest.TestCase):
     def test_circle_invalid_coordinates(self):
         coords = geojson.utils.generate_random('Point')['coordinates']
         circle = reqon.geo.Circle(coordinates=[coords], radius=0)
-        output = reqon.geo.is_valid(circle)
-        assert output['valid'] == 'no'
-        assert '"coordinates"' in output['message']
+        with pytest.raises(reqon.exceptions.ValidationError):
+            reqon.validators.validate_geojson(circle)
 
     def test_circle_invalid_radius(self):
         coords = geojson.utils.generate_random('Point')['coordinates']
         circle = reqon.geo.Circle(coordinates=coords, radius='12km')
-        output = reqon.geo.is_valid(circle)
-        assert output['valid'] == 'no'
-        assert '"radius"' in output['message']
+        with pytest.raises(reqon.exceptions.ValidationError):
+            reqon.validators.validate_geojson(circle)
 
     def test_geojson_to_reql_invalid(self):
         point = geojson.utils.generate_random('Point')

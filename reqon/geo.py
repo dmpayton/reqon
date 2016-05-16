@@ -38,23 +38,12 @@ class Circle(geojson.geometry.Geometry):
         return r.circle(self['coordinates'], radius=self['radius'], **kwargs)
 
 
-SHAPES = {
+GEOMETRIES = {
     'Point': Point,
     'LineString': LineString,
     'Polygon': Polygon,
     'Circle': Circle,
 }
-
-
-def is_valid(obj):
-    output = geojson.validation.output
-    if isinstance(obj, Circle):
-        if len(obj.coordinates) != 2:
-            return output('the "coordinates" member must be a single position')
-        if obj.radius is None or not isinstance(obj['radius'], (int, float)):
-            return output('the "radius" member must be an integer')
-        return output('')
-    return geojson.is_valid(obj)
 
 
 def geojson_to_reql(data):
@@ -65,9 +54,5 @@ def geojson_to_reql(data):
         data = json.loads(data)
 
     data = validate_geojson(data)
-    geometry = SHAPES[data['type']](**data)
-    output = is_valid(geometry)
-    if output['valid'] == 'no':
-        raise ValidationError(output['message'])
-
+    geometry = GEOMETRIES[data['type']](**data)
     return geometry.as_reql()
