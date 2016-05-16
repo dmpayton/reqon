@@ -40,19 +40,18 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
     # Filter
 
 
-    # def test_filter(self):
-    #     reql1 = self.reqlify(lambda: reqon.TERMS['$filter'](self.reql, predicate=[
-    #         ['rank', ['$gt', 8]],
-    #         ['age', ['$lt', 6]]
-    #     ]))
-    #     reql2 = self.reqlify(lambda: self.reql.filter(r.row['rank'].gt(8)).filter(r.row['age'].lt(6)))
-    #     assert str(reql1) == str(reql2)
+    def test_filter(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$filter'](self.reql, predicate=[
+            ['rank', ['$gt', 8]],
+            ['age', ['$lt', 6]]
+        ]))
+        reql2 = self.reqlify(lambda: self.reql.filter(r.row['rank'].gt(8), default=False).filter(r.row['age'].lt(6), default=False))
+        assert str(reql1) == str(reql2)
 
 
-    # def test_invalid_filter(self):
-    #     with pytest.raises(reqon.exceptions.InvalidFilterError) as excinfo:
-    #         terms.filter_(self.reql, [{ 'foo': 'bar' }])
-    #     assert terms.ERRORS['filter']['invalid'].format("[{'foo': 'bar'}]") == str(excinfo.value)
+    def test_invalid_filter(self):
+        with pytest.raises(reqon.exceptions.ReqonError):
+            reqon.TERMS['$filter'](self.reql, predicate=[{'foo': 'bar'}])
 
 
     # Has Fields
