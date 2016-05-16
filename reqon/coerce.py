@@ -12,7 +12,7 @@ TIMEZONES = {tz: pytz.timezone(tz) for tz in pytz.all_timezones}
 
 
 def coerce(value):
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple)):
         if len(value) == 2 and value[0] in COERSIONS:
             return COERSIONS[value[0]](value[1])
         return [coerce(item) for item in value]

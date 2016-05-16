@@ -28,6 +28,14 @@ class GeoJSONToReQLTests(ReQONTestMixin, unittest.TestCase):
         dt2 = datetime.time(16, 20)
         assert dt1 == dt2
 
+    def test_minval(self):
+        coerced = reqon.coerce.coerce('$minval')
+        assert coerced == r.minval
+
+    def test_maxval(self):
+        coerced = reqon.coerce.coerce('$maxval')
+        assert coerced == r.maxval
+
     def test_point(self):
         point = geojson.utils.generate_random('Point')
         point1 = reqon.coerce.coerce(['$geojson', dict(point)])

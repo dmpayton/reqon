@@ -41,7 +41,7 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
 
 
     # def test_filter(self):
-    #     reql1 = self.reqlify(lambda: reqon.TERMS['$filter'](self.reql, [
+    #     reql1 = self.reqlify(lambda: reqon.TERMS['$filter'](self.reql, predicate=[
     #         ['rank', ['$gt', 8]],
     #         ['age', ['$lt', 6]]
     #     ]))
@@ -255,7 +255,7 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         reql2 = self.reqlify(lambda: self.reql.get_intersecting(r.point(*point['coordinates']), index='location'))
         assert str(reql1) == str(reql2)
 
-    def test_get_intersecting(self):
+    def test_get_nearest(self):
         point = geojson.utils.generate_random('Point')
         reql1 = self.reqlify(lambda: reqon.TERMS['$get_nearest'](self.reql, geometry=point, index='location'))
         reql2 = self.reqlify(lambda: self.reql.get_nearest(r.point(*point['coordinates']), index='location'))

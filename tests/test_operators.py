@@ -2,8 +2,9 @@ import reqon
 import rethinkdb as r
 import unittest
 
-from reqon import operators
+from reqon import operators, build_reql
 from .utils import ReQONTestMixin
+
 
 class OperatorsTests(ReQONTestMixin, unittest.TestCase):
     def setUp(self):
@@ -60,3 +61,17 @@ class OperatorsTests(ReQONTestMixin, unittest.TestCase):
         }
         response = operators.intersects(r.row["area"], polygon)
         assert str(response) == "r.row['area'].intersects(r.polygon([-116, 28], [13, -26], [59, 58], [-116, 28]))"
+
+    def test_modifier(self):
+        query = {
+            '$db': 'test',
+            '$table': 'users',
+            '$query': [
+                ['$filter', {'predicate': [
+                    ['birthday.$date', ['$lt', '1998']]
+                ]}]
+            ]
+        }
+        reql = build_reql(query)
+        assert "r.row['birthday'].date() < r.expr('1998'))" in str(reql)
+
