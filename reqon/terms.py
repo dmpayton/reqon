@@ -147,7 +147,7 @@ def get_nearest(reql, geometry, index, **kwargs):
     return reql.get_nearest(geometry, index=index, **kwargs)
 
 
-TERMS = {
+READ_TERMS = {
     '$get': get,
     '$get_all': get_all,
     '$filter': filter,
@@ -175,3 +175,30 @@ TERMS = {
     '$get_intersecting': get_intersecting,
     '$get_nearest': get_nearest,
 }
+
+
+# TODO:
+# WRITE_TERMS = {
+#     '$insert': insert,
+#     '$update': update,
+#     '$replace': replace,
+# }
+
+
+def delete(reql, durability='hard', return_changes=False):
+    return reql.delete(durability, return_changes)
+
+DELETE_TERMS = {
+    '$delete': delete,
+}
+
+
+def gather_terms(allow_delete=False):
+    terms = {}
+    terms.update(READ_TERMS)
+    if allow_delete:
+        terms.update(DELETE_TERMS)
+    return terms
+
+# All terms in one dict
+TERMS = gather_terms(allow_delete=True)

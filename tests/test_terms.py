@@ -13,6 +13,9 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
     def setUp(self):
         self.reql = r.table('movies')
 
+    def test_gather(self):
+        assert sorted(terms.gather_terms().keys()) == sorted(terms.READ_TERMS.keys())
+        assert '$delete' in terms.gather_terms(allow_delete=True).keys()
 
     # Get
 
@@ -258,4 +261,12 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
         point = geojson.utils.generate_random('Point')
         reql1 = self.reqlify(lambda: reqon.TERMS['$get_nearest'](self.reql, geometry=point, index='location'))
         reql2 = self.reqlify(lambda: self.reql.get_nearest(r.point(*point['coordinates']), index='location'))
+        assert str(reql1) == str(reql2)
+
+
+    # Delete
+
+    def test_delete(self):
+        reql1 = self.reqlify(lambda: reqon.TERMS['$delete'](self.reql))
+        reql2 = self.reqlify(lambda: self.reql.delete('hard', False))
         assert str(reql1) == str(reql2)
