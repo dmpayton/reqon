@@ -15,7 +15,7 @@ def query(query):
             reql = r.table(query['$table'])
         except KeyError:
             raise ReqonError('The query descriptor requires a $table key.')
-    return build_terms(query['$query'], reql)
+    return build_terms(reql, query['$query'])
 
 
 def build_terms(reql, query):
