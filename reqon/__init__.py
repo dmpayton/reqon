@@ -10,14 +10,18 @@ from .validators import validate_query
 def build_reql(query, allow_delete=False):
     query = validate_query(query)
 
-    terms = gather_terms(allow_delete=allow_delete)
-
     try:
         reql = r.db(query['$db']).table(query['$table'])
     except KeyError:
         reql = r.table(query['$table'])
 
-    for sequence in query.get('$query', []):
+    return build_terms(reql, query.get('$query', []), allow_delete=allow_delete)
+
+
+def build_terms(reql, query, allow_delete=False):
+    terms = gather_terms(allow_delete=allow_delete)
+
+    for sequence in query:
         try:
             term, kwargs = sequence
         except ValueError:
