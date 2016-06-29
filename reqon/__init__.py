@@ -2,6 +2,7 @@ import rethinkdb as r
 
 from . import coerce, exceptions, geo, operators, terms
 from .coerce import COERSIONS
+from .exceptions import ReqonError
 from .operators import BOOLEAN, EXPRESSIONS, MODIFIERS
 from .terms import gather_terms, TERMS
 from .validators import validate_query
