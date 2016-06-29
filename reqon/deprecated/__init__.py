@@ -18,7 +18,7 @@ def query(query):
     return build_terms(query['$query'], reql)
 
 
-def build_terms(query, reql):
+def build_terms(reql, query):
     for sequence in query:
         term = sequence[0]
         try:
