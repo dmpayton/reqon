@@ -110,7 +110,33 @@ class GeoJSONValidatorTests(ReQONTestMixin, unittest.TestCase):
         })
         validate_geojson(circle)
 
-    def test_invalid_circle(self):
+    def test_invalid_circle_coordinates(self):
         circle = {'type': 'Circle', 'coordinates': 'lol nope'}
+        with pytest.raises(reqon.exceptions.ValidationError):
+            validate_geojson(circle)
+
+    def test_invalid_circle_unit(self):
+        circle = geojson.utils.generate_random('Point')
+        circle.update({
+            'type': 'Circle',
+            'radius': 10,
+            'unit': 'haha'
+        })
+        with pytest.raises(reqon.exceptions.ValidationError):
+            validate_geojson(circle)
+
+    def test_invalid_circle_additional_properties(self):
+        circle = geojson.utils.generate_random('Point')
+        circle.update({
+            'type': 'Circle',
+            'radius': 10,
+            'invalid': 'data'
+        })
+        with pytest.raises(reqon.exceptions.ValidationError):
+            validate_geojson(circle)
+
+    def test_invalid_circle_missing_radius(self):
+        circle = geojson.utils.generate_random('Point')
+        circle.update({'type': 'Circle'})
         with pytest.raises(reqon.exceptions.ValidationError):
             validate_geojson(circle)

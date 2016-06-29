@@ -13,11 +13,6 @@ query_schema = jsonschema.Draft4Validator({
             'type': 'array',
             'items': {
                 'oneOf': [
-                    { # Empty query
-                        'type': 'array',
-                        'minItems': 0,
-                        'maxItems': 0
-                    },
                     { # Term with no arguments
                         'type': 'array',
                         'items': [
@@ -36,7 +31,8 @@ query_schema = jsonschema.Draft4Validator({
                         'maxItems': 2
                     }
                 ]
-            }
+            },
+            'minItems': 0,
         }
     },
     'required': ['$table']
@@ -104,8 +100,13 @@ geojson_schema = jsonschema.Draft4Validator({
                 'type': {'enum': ['Circle']},
                 'coordinates': {'$ref': '#/definitions/position'},
                 'radius': {'type': 'number'},
+                'num_vertices': {'type': 'number'},
+                'geo_system': {'enum': ['WGS84', 'unit_sphere']},
+                'unit': {'enum': ['m', 'km', 'mi', 'nm', 'ft']},
+                'fill': {'type': 'boolean'},
             },
-            'additionalProperties': True
+            'additionalProperties': False,
+            'required': ['type', 'coordinates', 'radius'],
         },
     ],
     'definitions': {
