@@ -31,12 +31,9 @@ def build_terms(reql, query, allow_delete=False):
 
         try:
             reql = terms[term](reql, **kwargs)
-        except ReqonError as err:
+        except (r.ReqlError, ReqonError) as err:
             # Re-raise, but prepend with the term
-            raise ReqonError('{0}: {1}'.join(term, err.message))
-        except r.ReqlError as err:
-            message = '{0}: {1}'
-            raise ReqonError(message.format(term, err.message))
+            raise ReqonError('{0}: {1}'.format(term, err.message))
         except Exception:
             message = '{0}: Unknown error'
             raise ReqonError(message.format(term, kwargs))
