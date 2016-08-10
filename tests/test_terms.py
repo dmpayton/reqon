@@ -268,5 +268,5 @@ class TermsTests(ReQONTestMixin, unittest.TestCase):
 
     def test_delete(self):
         reql1 = self.reqlify(lambda: reqon.TERMS['$delete'](self.reql))
-        reql2 = self.reqlify(lambda: self.reql.delete('hard', False))
+        reql2 = self.reqlify(lambda: self.reql.delete(durability='hard', return_changes=False))
         assert str(reql1) == str(reql2)

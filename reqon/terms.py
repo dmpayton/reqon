@@ -186,7 +186,7 @@ READ_TERMS = {
 
 
 def delete(reql, durability='hard', return_changes=False):
-    return reql.delete(durability, return_changes)
+    return reql.delete(durability=durability, return_changes=return_changes)
 
 DELETE_TERMS = {
     '$delete': delete,
