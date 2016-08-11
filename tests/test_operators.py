@@ -22,8 +22,8 @@ class OperatorsTests(ReQONTestMixin, unittest.TestCase):
         response = operators.in_(r.row["score"], [1, 2, 3])(r.row)
         assert str(response) == "r.expr([1, 2, 3]).contains(lambda var_1: r.row['score'])"
 
-    def test_regex(self):
-        response = operators.regex(r.row["name"], "^foo")
+    def test_match(self):
+        response = operators.match(r.row["name"], "^foo")
         assert str(response) == "r.row['name'].coerce_to('string').match('^foo')"
 
     def test_ieq(self):

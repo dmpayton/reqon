@@ -1,4 +1,6 @@
 import datetime
+import warnings
+
 import rethinkdb as r
 
 from .coerce import coerce
@@ -54,46 +56,51 @@ def in_(row, value):
     return lambda doc: r.expr(value).contains(doc[attr])
 
 
-def regex(row, value):
+def match(row, value):
     '''
-        ['name', ['$regex', '^D']]
+        ['name', ['$match', '^D']]
     '''
     return row.coerce_to('string').match(value)
+
+
+def regex(row, value):
+    warnings.warn('$regex has been renamed to $match.', DeprecationWarning)
+    return match(row, value)
 
 
 def ieq(row, value):
     '''
         ['name', ['$ieq', 'derek']]
     '''
-    return regex(row, '(?i)^{0}$'.format(value))
+    return match(row, '(?i)^{0}$'.format(value))
 
 
 def starts(row, value):
     '''
         ['name', ['$starts', 'D']]
     '''
-    return regex(row, '^{0}'.format(value))
+    return match(row, '^{0}'.format(value))
 
 
 def istarts(row, value):
     '''
         ['name', ['$istarts', 'd']]
     '''
-    return regex(row, '(?i)^{0}'.format(value))
+    return match(row, '(?i)^{0}'.format(value))
 
 
 def ends(row, value):
     '''
         ['name', ['$ends', 'Y']]
     '''
-    return regex(row, '{0}$'.format(value))
+    return match(row, '{0}$'.format(value))
 
 
 def iends(row, value):
     '''
         ['name', ['$iends', 'y']]
     '''
-    return regex(row, '(?i){0}$'.format(value))
+    return match(row, '(?i){0}$'.format(value))
 
 
 def includes(row, value):
@@ -133,6 +140,7 @@ EXPRESSIONS = {
     '$lt': r.lt,
     '$le': r.le,
     '$in': in_,
+    '$match': match,
     '$regex': regex,
     '$starts': starts,
     '$istarts': istarts,
